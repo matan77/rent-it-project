@@ -2,7 +2,10 @@ import User from '../models/User';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import { MongooseError } from 'mongoose';
+import mongoose from 'mongoose';
+import { ResError } from './ResError';
+
+
 
 
 dotenv.config();
@@ -13,12 +16,10 @@ export default {
             const hashedPassword = await bcrypt.hash(password, 10);
             await User.create({ name, email, password: hashedPassword, phoneNumber });
         } catch (error) {
-            if (error instanceof MongooseError) {
-                console.error(error);
-                console.error(typeof error);
-                throw new Error("There is already an account with this email");
+            if (error instanceof mongoose.mongo.MongoServerError && error.code == 11000) {
+                throw new ResError(409, "There is already an account with this email")
             }
-            throw new Error('Internal Server Error');
+            throw new ResError();
         }
     },
     loginUser: async (email: string, password: string) => {
@@ -26,36 +27,35 @@ export default {
             const user = await User.findOne({ email });
 
             if (!user || !(await bcrypt.compare(password, user.password))) {
-                throw new Error('Invalid email or password');
+                throw new ResError(401, 'Invalid email or password');
             }
 
             if (user.isDeleted) {
-                throw new Error('The account deleted');
+                throw new ResError(403, 'The account is deleted');
             }
 
             const token = jwt.sign({ userId: user.id }, process.env.SECRET_KEY as string, { expiresIn: '7d' });
 
             return [user, token];
         } catch (error) {
-            throw error;
+            throw new ResError();
         }
     },
     getUser: async (id: string) => {
+        let user: null | { name: string, email: string, phoneNumber: string } = null;
         try {
-            const user = await User.findOne({ _id: id });
-            if (user) {
-                return {
-                    name: user.name,
-                    email: user.email,
-                    phoneNumber: user.phoneNumber
-                }
+            user = await User.findOne({ _id: id },"id name email phoneNumber");
+
+            if (!user) {
+                throw new ResError(404, "User not found");
             }
-            else {
-                return null
-            };
-        }
-        catch (error) {
-            throw new Error('Internal Server Error');
+
+            return user;
+        } catch (error) {
+            if (error instanceof ResError) {
+                throw error;
+            }
+            throw new ResError();
         }
     },
 
@@ -68,7 +68,7 @@ export default {
             });
         }
         catch (error) {
-            throw new Error('Error update user details');
+            throw new ResError();
         }
     },
 
@@ -77,7 +77,7 @@ export default {
             return User.updateOne({ _id: id }, { $set: { isDeleted: true } });
         }
         catch (error) {
-            throw new Error('Error delete failed');
+            throw new ResError();
         }
     },
 
@@ -87,7 +87,7 @@ export default {
             return user?.isDeleted;
         }
         catch (error) {
-            throw new Error('Error delete failed');
+            throw new ResError();
         }
     }
 

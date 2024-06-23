@@ -1,6 +1,7 @@
-import { ValidationError, body, check, validationResult } from "express-validator";
+import { body, check, param, validationResult } from "express-validator";
 import { Request, Response } from 'express';
 import usersService from '../services/users'
+import { ResError } from "../services/ResError";
 
 export default {
     registerUser: [
@@ -21,8 +22,8 @@ export default {
                 await usersService.registerUser(name, email, password, phoneNumber);
                 res.status(201).json({ message: 'User registered successfully' });
             } catch (error) {
-                if (error instanceof Error)
-                    res.status(500).json({ message: error.message });
+                if (error instanceof ResError)
+                    res.status(error.status).json({ message: error.message });
             }
         }
     ],
@@ -40,29 +41,30 @@ export default {
                 const [user, token] = await usersService.loginUser(email, password);
                 res.status(200).json({ user, token });
             } catch (error) {
-                if (error instanceof Error)
-                    res.status(500).json({ message: error.message });
+                if (error instanceof ResError)
+                    res.status(error.status).json({ message: error.message });
             }
         }
     ],
 
     getUser: [
-        check('id').isMongoId(),
+        param('id',"invalid user id").isMongoId(),
         async (req: Request, res: Response) => {
-            const errors = validationResult(req);
-            if (!errors.isEmpty()) {
-                return res.status(400).json({ errors: errors.array() });
+            if (req.params.id) {
+                const errors = validationResult(req);
+                if (!errors.isEmpty()) {
+                    return res.status(400).json({ errors: errors.array() });
+                }
+            }
+            else {
+                req.params.id = res.locals.userId;
             }
             try {
                 const user = await usersService.getUser(req.params.id);
-                if (user) {
-                    res.status(200).json(user);
-                } else {
-                    res.status(404).json({ message: 'User not found' });
-                }
+                res.status(200).json(user);
             } catch (error) {
-                if (error instanceof Error)
-                    res.status(500).json({ message: error.message });
+                if (error instanceof ResError)
+                    res.status(error.status).json({ message: error.message });
 
             }
         }],
@@ -80,8 +82,8 @@ export default {
                 await usersService.updateUser(res.locals.userId, name, phoneNumber);
                 res.status(200).json({ message: 'User updated successfully' });
             } catch (error) {
-                if (error instanceof Error)
-                    res.status(500).json({ message: error.message });
+                if (error instanceof ResError)
+                    res.status(error.status).json({ message: error.message });
             }
         }
     ],
@@ -91,8 +93,8 @@ export default {
             await usersService.deleteUser(res.locals.userId);
             res.status(200).json({ message: 'User deleted successfully' });
         } catch (error) {
-            if (error instanceof Error)
-                res.status(500).json({ message: error.message });
+            if (error instanceof ResError)
+                res.status(error.status).json({ message: error.message });
         }
     }
 }

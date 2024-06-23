@@ -1,7 +1,7 @@
 import usersService from '../services/users';
 import { Request, Response, NextFunction } from 'express';
 
-const isDeleted = async (req:Request, res:Response, next: NextFunction) => {
+const isDeleted = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const deleted = await usersService.isUserDeleted(res.locals.userId);
         if (deleted) {

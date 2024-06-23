@@ -5,8 +5,7 @@
   "scripts": {
     "build": "npx tsc",
     "start": "npm run build && node dist/server.js",
-    "dev": "nodemon --exec npx ts-node server.ts",
-    "debug": "nodemon --inspect --exec npx ts-node server.ts"
+    "dev": "nodemon --exec npx ts-node server.ts"
   },
   "repository": {
     "type": "git",
