@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
-import { ResError } from './ResError';
+import { ResError } from '../../types/ResError';
 
 
 
@@ -26,6 +26,7 @@ export default {
         try {
             const user = await User.findOne({ email });
 
+	
             if (!user || !(await bcrypt.compare(password, user.password))) {
                 throw new ResError(401, 'Invalid email or password');
             }
@@ -38,6 +39,9 @@ export default {
 
             return [user, token];
         } catch (error) {
+			if (error instanceof ResError) {
+                throw error;
+            }
             throw new ResError();
         }
     },

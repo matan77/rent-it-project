@@ -1,7 +1,7 @@
 import { body, check, param, validationResult } from "express-validator";
 import { Request, Response } from 'express';
 import usersService from '../services/users'
-import { ResError } from "../services/ResError";
+import { ResError } from "../../types/ResError";
 
 export default {
     registerUser: [
@@ -15,15 +15,15 @@ export default {
         async (req: Request, res: Response) => {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return res.status(400).json({ errors: errors.array() });
+                return res.status(400).json({ msg: errors.array() });
             }
             const { name, email, password, phoneNumber } = req.body;
             try {
                 await usersService.registerUser(name, email, password, phoneNumber);
-                res.status(201).json({ message: 'User registered successfully' });
+                res.status(201).json({ msg: 'User registered successfully' });
             } catch (error) {
                 if (error instanceof ResError)
-                    res.status(error.status).json({ message: error.message });
+                    res.status(error.status).json({ msg: error.message });
             }
         }
     ],
@@ -42,13 +42,13 @@ export default {
                 res.status(200).json({ user, token });
             } catch (error) {
                 if (error instanceof ResError)
-                    res.status(error.status).json({ message: error.message });
+                    res.status(error.status).json({ msg: error.message });
             }
         }
     ],
 
     getUser: [
-        param('id',"invalid user id").isMongoId(),
+        param('id', "invalid user id").isMongoId(),
         async (req: Request, res: Response) => {
             if (req.params.id) {
                 const errors = validationResult(req);
@@ -64,7 +64,7 @@ export default {
                 res.status(200).json(user);
             } catch (error) {
                 if (error instanceof ResError)
-                    res.status(error.status).json({ message: error.message });
+                    res.status(error.status).json({ msg: error.message });
 
             }
         }],
@@ -80,10 +80,10 @@ export default {
             const { name, phoneNumber } = req.body;
             try {
                 await usersService.updateUser(res.locals.userId, name, phoneNumber);
-                res.status(200).json({ message: 'User updated successfully' });
+                res.status(200).json({ msg: 'User updated successfully' });
             } catch (error) {
                 if (error instanceof ResError)
-                    res.status(error.status).json({ message: error.message });
+                    res.status(error.status).json({ msg: error.message });
             }
         }
     ],
@@ -91,10 +91,10 @@ export default {
     deleteUser: async (req: Request, res: Response) => {
         try {
             await usersService.deleteUser(res.locals.userId);
-            res.status(200).json({ message: 'User deleted successfully' });
+            res.status(200).json({ msg: 'User deleted successfully' });
         } catch (error) {
             if (error instanceof ResError)
-                res.status(error.status).json({ message: error.message });
+                res.status(error.status).json({ msg: error.message });
         }
     }
 }
