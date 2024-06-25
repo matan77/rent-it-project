@@ -15,16 +15,21 @@ import { findErrorByPath } from "@/utils/error";
 import axios from "axios";
 import { Text } from "@gluestack-ui/themed";
 import { Link } from 'expo-router';
+import { ErrorsResponse } from "@/types/error";
 
-export default function Login() {
-	const [errors, setErrors] = useState({ errors: [] });
+export default function Register() {
+	const [errors, setErrors] = useState<ErrorsResponse>({ errors: [] });
 
 	const [form, setForm] = useState({
+		name: "",
+		phoneNumber: "",
 		email: "",
 		password: ""
 	});
 	const toast = useToast()
 
+	const nameError = findErrorByPath(errors.errors, "name");
+	const phoneError = findErrorByPath(errors.errors, "phoneNumber");
 	const emailError = findErrorByPath(errors.errors, "email");
 	const passwordError = findErrorByPath(errors.errors, "password");
 
@@ -36,19 +41,21 @@ export default function Login() {
 		})
 	}
 
-	const handleLogin = async () => {
+	const handleRegister = async () => {
 
-		setErrors({ errors: [] });
 		try {
-			const res = await api.post('/api/users/login', form);
+			const res = await api.post('/api/users/register', form);
 			console.log(res.data());
 		} catch (error) {
+			console.log(JSON.stringify(error))
 			if (axios.isAxiosError(error)) {
 				if (error.response?.status === 400) {
 					setErrors(error.response?.data);
 				}
 				else {
 					setForm({
+						name: "",
+						phoneNumber: "",
 						email: "",
 						password: ""
 					});
@@ -74,11 +81,37 @@ export default function Login() {
 	return <>
 
 		<VStack space="xl" paddingTop="$10" $lg-width="15%" justifyContent="center" $lg-alignSelf="center" paddingHorizontal="$5">
-			<Image size="2xl" alt='logo' alignSelf="center" source={require('../assets/images/favicon.png')}></Image>
-			<Heading color="$text900" $dark-color="$white" alignSelf="center" lineHeight="$md" marginBottom="$10">
-				Welcome Back
+			<Image size="xl" alt='logo' alignSelf="center" source={require('../assets/images/favicon.png')}></Image>
+			<Heading color="$text900" $dark-color="$white" alignSelf="center" lineHeight="$md" marginBottom="$5">
+				Create your account
 			</Heading>
 
+			<FormControl isInvalid={nameError !== undefined}>
+				<Input size="lg">
+					<InputField onChangeText={(name: string) => setForm({ ...form, name })}
+						type="text" placeholder="name" value={form.name} />
+				</Input>
+				<FormControlError>
+					<FormControlErrorIcon as={AlertCircleIcon} />
+					<FormControlErrorText >
+						{nameError?.msg}
+					</FormControlErrorText>
+				</FormControlError>
+			</FormControl>
+
+
+			<FormControl isInvalid={phoneError !== undefined}>
+				<Input size="lg">
+					<InputField onChangeText={(phoneNumber: string) => setForm({ ...form, phoneNumber })}
+						type="text" placeholder="phone" value={form.phoneNumber} />
+				</Input>
+				<FormControlError>
+					<FormControlErrorIcon as={AlertCircleIcon} />
+					<FormControlErrorText >
+						{phoneError?.msg}
+					</FormControlErrorText>
+				</FormControlError>
+			</FormControl>
 
 			<FormControl isInvalid={emailError !== undefined}>
 				<Input size="lg">
@@ -115,8 +148,8 @@ export default function Login() {
 			</FormControl>
 
 
-			<Button onPress={handleLogin}>
-				<ButtonText >Login </ButtonText>
+			<Button onPress={handleRegister}>
+				<ButtonText>Register</ButtonText>
 			</Button>
 
 			<HStack>
@@ -124,13 +157,13 @@ export default function Login() {
 				<Text marginHorizontal="$3" >OR</Text>
 				<Divider height={2} flex={1} marginTop="$3.5" />
 			</HStack>
-
-			<View alignSelf="center">
-				<Link href="/register">
-					<Text size="md" color="$primary600" bold={true} >Create an account</Text>
+			<HStack alignSelf="center">
+				<Text size="md" color="$black" bold={true} >Already have an account? </Text>
+				<Link href="/login">
+					<Text size="md" color="$primary600" bold={true} >Login</Text>
 				</Link>
-			</View>
 
+			</HStack>
 
 		</VStack>
 
