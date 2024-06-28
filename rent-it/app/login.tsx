@@ -3,10 +3,10 @@ import {
 	ButtonText, Image, FormControl, EyeIcon, EyeOffIcon,
 	FormControlError, FormControlErrorIcon, FormControlErrorText,
 	useToast, Toast, ToastTitle,
-	Divider, HStack, Icon,
+	Divider, HStack, AlertCircleIcon,
 	View
 } from "@gluestack-ui/themed";
-import { AlertCircleIcon } from 'lucide-react-native'
+
 
 import { useState } from 'react';
 import api from "@/utils/api";
@@ -86,6 +86,7 @@ export default function Login() {
 						type="text" placeholder="Email" value={form.email} />
 				</Input>
 				<FormControlError>
+
 					<FormControlErrorIcon as={AlertCircleIcon} />
 					<FormControlErrorText >
 						{emailError?.msg}

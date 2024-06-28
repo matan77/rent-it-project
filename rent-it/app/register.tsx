@@ -3,10 +3,9 @@ import {
 	ButtonText, Image, FormControl, EyeIcon, EyeOffIcon,
 	FormControlError, FormControlErrorIcon, FormControlErrorText,
 	useToast, Toast, ToastTitle,
-	Divider, HStack, Icon,
-	View
+	Divider, HStack,
+	AlertCircleIcon
 } from "@gluestack-ui/themed";
-import { AlertCircleIcon } from 'lucide-react-native'
 
 import { useState } from 'react';
 import api from "@/utils/api";

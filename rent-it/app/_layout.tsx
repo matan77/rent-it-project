@@ -6,8 +6,8 @@ import {
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect, useState } from "react";
-import { GluestackUIProvider, Text, Box } from "@gluestack-ui/themed";
+import { useEffect } from "react";
+import { GluestackUIProvider, Box } from "@gluestack-ui/themed";
 import { config } from "@gluestack-ui/config";
 import { useColorScheme } from "react-native";
 import { Slot } from "expo-router";
