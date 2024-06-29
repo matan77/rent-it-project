@@ -46,7 +46,6 @@ export default function Register() {
 			const res = await api.post('/api/users/register', form);
 			console.log(res.data());
 		} catch (error) {
-			console.log(JSON.stringify(error))
 			if (axios.isAxiosError(error)) {
 				if (error.response?.status === 400) {
 					setErrors(error.response?.data);

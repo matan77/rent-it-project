@@ -1,4 +1,4 @@
-import { body, check, param, validationResult } from "express-validator";
+import { body, param, validationResult } from "express-validator";
 import { Request, Response } from 'express';
 import usersService from '../services/users'
 import { ResError } from "../../types/ResError";
@@ -16,7 +16,6 @@ export default {
 			const errors = validationResult(req);
 			
 			if (!errors.isEmpty()) {
-				console.log(1123);
 				return res.status(400).json({ errors: errors.array() });
 			}
 			const { name, email, password, phoneNumber } = req.body;
@@ -40,8 +39,8 @@ export default {
 			}
 			const { email, password } = req.body;
 			try {
-				const [user, token] = await usersService.loginUser(email, password);
-				res.status(200).json({ user, token });
+				const [name, token] = await usersService.loginUser(email, password);
+				res.status(200).json({ name, token });
 			} catch (error) {
 				if (error instanceof ResError)
 					res.status(error.status).json({ msg: error.message });

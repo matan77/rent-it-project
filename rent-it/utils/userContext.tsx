@@ -1,6 +1,5 @@
-import React, { createContext, useState, Context, ReactNode, useEffect, useRef } from 'react';
-import { AppState } from 'react-native';
-import { router } from 'expo-router';
+import React, { createContext, useState, Context, ReactNode, useEffect } from 'react';
+import { Platform } from 'react-native';
 import api from './api';
 import axios from 'axios'
 import {
@@ -8,11 +7,9 @@ import {
 	AlertDialogHeader, AlertDialogBody, Image
 } from '@gluestack-ui/themed';
 
-type User = {
-	name: string;
-	email: string;
-	phoneNumber: string;
-} | null;
+import { User } from '@/types/user';
+import * as SecureStore from 'expo-secure-store';
+import { router } from 'expo-router';
 
 
 export const UserContext: Context<UserContextType> = createContext<UserContextType>(undefined);
@@ -24,45 +21,47 @@ interface UserProviderProps {
 type UserContextType = {
 	user: User;
 	setUser: React.Dispatch<React.SetStateAction<User>>;
+	trigger: boolean;
+	setTrigger: React.Dispatch<React.SetStateAction<boolean>>;
 } | undefined;
 
 export const UserProvider = ({ children }: UserProviderProps) => {
 	const [user, setUser] = useState<User>(null);
+	const [trigger, setTrigger] = useState(false);
 	const [isOpen, setIsOpen] = useState(false);
-	const appState = useRef(AppState.currentState);
-	const [appStateVisible, setAppStateVisible] = useState(appState.current);
-
-	const handleChange = (newState: string) => {
-		if (newState === "active") {
-
-			setIsOpen(true);
-			api.get('/api/users')
-				.then((res) => {
-					setIsOpen(false);
-					setUser(res.data as User);
-				})
-				.catch((error) => {
-					setIsOpen(false);
-
-					if (!axios.isAxiosError(error) || error.code !== 'ERR_NETWORK') {
-						router.replace('/');
-					}
-				});
-		}
-	}
 
 	useEffect(() => {
-		const evl = AppState.addEventListener('change', handleChange);
-		handleChange("active");
-		return () => {
-			evl.remove();
+
+		if (Platform.OS != 'web') {
+			const token = SecureStore.getItem("AUTH_TOKEN")
+			if (token) {
+				api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+			}
 		}
-	}, []);
+		setIsOpen(true);
+		api.get('/api/users')
+			.then((res) => {
+
+				setIsOpen(false);
+				setUser({ name: res.data.name as string });
+				router.replace('/menu');
+			})
+			.catch((error) => {
+				setIsOpen(false);
+
+
+				if (!(error instanceof Error && error.message === "serviceDown")) {
+					router.replace('/');
+				}
+			})
+	}, [trigger]);
+
+
 
 
 
 	return (
-		<UserContext.Provider value={{ user, setUser }}>
+		<UserContext.Provider value={{ user, setUser, trigger, setTrigger }}>
 			<AlertDialog
 				isOpen={isOpen}
 			>

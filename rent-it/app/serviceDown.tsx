@@ -1,10 +1,30 @@
 import { Button, ButtonText } from '@gluestack-ui/themed';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BackHandler } from 'react-native';
-import { Stack, router } from "expo-router";
+import { Stack } from "expo-router";
 import { Text, Center, Image } from "@gluestack-ui/themed";
 
-export default function NotFoundScreen() {
+import { UserContext } from '../utils/userContext'
+import { useContext } from 'react';
+import { AppState } from 'react-native';
+
+export default function serviceDown() {
+
+	const userContext = useContext(UserContext);
+	useEffect(() => {
+		const subscription = AppState.addEventListener('change', nextAppState => {
+			if (nextAppState === "active") {
+				userContext?.setTrigger(!userContext?.trigger);
+			}
+
+		});
+
+		return () => {
+			subscription.remove();
+		};
+	}, []);
+
+
 	return <>
 		<Stack.Screen options={{
 			title: "Oops!"

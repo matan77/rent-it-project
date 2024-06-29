@@ -14,20 +14,29 @@ import { findErrorByPath } from "@/utils/error";
 
 import axios from "axios";
 import { Text } from "@gluestack-ui/themed";
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
+import * as SecureStore from 'expo-secure-store';
+
+import { UserContext } from '../utils/userContext'
+import { useContext } from 'react';
+import { Platform } from "react-native";
+
 
 export default function Login() {
+	const userContext = useContext(UserContext);
 	const [errors, setErrors] = useState({ errors: [] });
 
 	const [form, setForm] = useState({
-		email: "",
-		password: ""
+		// for dev
+		email: "john.doe@example.com",
+		password: "Password123"
+		// email: "",
+		// password: ""
 	});
 	const toast = useToast()
 
 	const emailError = findErrorByPath(errors.errors, "email");
 	const passwordError = findErrorByPath(errors.errors, "password");
-
 
 	const [showPassword, setShowPassword] = useState(false)
 	const handleState = () => {
@@ -41,7 +50,18 @@ export default function Login() {
 		setErrors({ errors: [] });
 		try {
 			const res = await api.post('/api/users/login', form);
-			console.log(res.data());
+			const { name, token } = res.data as { name: string, token: string };
+
+
+
+			userContext?.setUser({ name });
+			if (Platform.OS != 'web') {
+				await SecureStore.setItemAsync("AUTH_TOKEN", token);
+			}
+			api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+			router.replace('menu');
+
 		} catch (error) {
 			if (axios.isAxiosError(error)) {
 				if (error.response?.status === 400) {
