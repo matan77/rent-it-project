@@ -7,6 +7,7 @@ import { Entypo, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icon
 
 export default function Layout() {
 	const colorScheme = useColorScheme();
+
 	return (
 		<GestureHandlerRootView >
 

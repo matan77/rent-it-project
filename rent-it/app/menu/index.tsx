@@ -1,10 +1,16 @@
 import { Text, View } from '@gluestack-ui/themed';
-import { Link } from 'expo-router';
+import { Redirect, router } from 'expo-router';
+import { useEffect } from 'react';
 
 
 
 
 export default function Home() {
+	console.log(12323123);
+	useEffect(() => {
+		router.push('/menu/myProperties')
+	}, [])
+
 	return (
 		<View >
 
