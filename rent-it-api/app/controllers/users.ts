@@ -14,14 +14,14 @@ export default {
 			.withMessage('Password must include at least one uppercase letter, one lowercase letter, and one digit'),
 		async (req: Request, res: Response) => {
 			const errors = validationResult(req);
-			
+
 			if (!errors.isEmpty()) {
 				return res.status(400).json({ errors: errors.array() });
 			}
 			const { name, email, password, phoneNumber } = req.body;
 			try {
-				await usersService.registerUser(name, email, password, phoneNumber);
-				res.status(201).json({ msg: 'User registered successfully' });
+				const token = await usersService.registerUser(name, email, password, phoneNumber);
+				res.status(201).json({ name, token });
 			} catch (error) {
 				if (error instanceof ResError)
 					res.status(error.status).json({ msg: error.message });
@@ -39,8 +39,8 @@ export default {
 			}
 			const { email, password } = req.body;
 			try {
-				const [name, token] = await usersService.loginUser(email, password);
-				res.status(200).json({ name, token });
+				const [user, token] = await usersService.loginUser(email, password);
+				res.status(200).json({ user, token });
 			} catch (error) {
 				if (error instanceof ResError)
 					res.status(error.status).json({ msg: error.message });

@@ -6,7 +6,7 @@ import mongoose from 'mongoose';
 import { ResError } from '../../types/ResError';
 
 
-
+const getToken = (userId: string) => jwt.sign({ userId }, process.env.SECRET_KEY as string, { expiresIn: '7d' });
 
 dotenv.config();
 
@@ -14,7 +14,9 @@ export default {
 	registerUser: async (name: string, email: string, password: string, phoneNumber: string) => {
 		try {
 			const hashedPassword = await bcrypt.hash(password, 10);
-			await User.create({ name, email, password: hashedPassword, phoneNumber });
+			const user = await User.create({ name, email, password: hashedPassword, phoneNumber });
+
+			return getToken(user.id);
 		} catch (error) {
 			if (error instanceof mongoose.mongo.MongoServerError && error.code == 11000) {
 				throw new ResError(409, "There is already an account with this email")
@@ -35,9 +37,13 @@ export default {
 				throw new ResError(403, 'The account is deleted');
 			}
 
-			const token = jwt.sign({ userId: user.id }, process.env.SECRET_KEY as string, { expiresIn: '7d' });
+			const token = getToken(user.id);
 
-			return [user.name, token];
+			return [{
+				name: user.name,
+				email: user.email,
+				phoneNumber: user.phoneNumber
+			}, token];
 		} catch (error) {
 			if (error instanceof ResError) {
 				throw error;
@@ -48,7 +54,7 @@ export default {
 	getUser: async (id: string) => {
 		let user: null | { name: string, email: string, phoneNumber: string } = null;
 		try {
-			user = await User.findOne({ _id: id }, "id name email phoneNumber");
+			user = await User.findOne({ _id: id }, "name email phoneNumber");
 
 			if (!user) {
 				throw new ResError(404, "User not found");

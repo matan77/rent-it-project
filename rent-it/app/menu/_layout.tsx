@@ -3,8 +3,6 @@ import { Drawer } from 'expo-router/drawer';
 import DrawerContent from '@/components/DrawerContent';
 import { useColorScheme } from 'react-native';
 import { Entypo, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
-import { Divider } from '@gluestack-ui/themed';
-
 
 
 export default function Layout() {
@@ -19,7 +17,6 @@ export default function Layout() {
 					sceneContainerStyle: { backgroundColor: colorScheme === "dark" ? "#262626" : "#ffffff" },
 					headerTintColor: colorScheme === "dark" ? "#d6d3d1" : "#000000",
 					title: "",
-					// headerTransparent: true,
 					headerStyle: {
 						backgroundColor: colorScheme === "dark" ? "#262626" : "#ffffff",
 

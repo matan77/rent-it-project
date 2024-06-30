@@ -1,4 +1,4 @@
-import { Divider, Image, Heading, View, HStack } from "@gluestack-ui/themed"
+import { Divider, Image, Heading, View, ScrollView } from "@gluestack-ui/themed"
 import {
 	DrawerContentComponentProps,
 	DrawerContentScrollView,
@@ -8,7 +8,7 @@ import {
 
 import Entypo from '@expo/vector-icons/Entypo';
 
-import { JSXElementConstructor, useContext } from 'react';
+import { useContext } from 'react';
 import { UserContext } from '@/utils/userContext';
 import * as SecureStore from 'expo-secure-store';
 import api from "@/utils/api";
@@ -20,21 +20,26 @@ export default function DrawerContent({ state, navigation, descriptors }: Drawer
 	const userContext = useContext(UserContext);
 	const drProps = { state, navigation, descriptors };
 
+	const menu = DrawerItemList(drProps)
 
 	return <>
 		<View flex={1}>
 			<Image alt='drawerBg' style={{ width: "auto" }} source={require('../assets/images/drawerBg.png')} />
 
-			<Heading color="$textLight700" $dark-color="$textLight400" alignSelf="center" marginBottom="$2">
+			<Heading color="$textLight700" $dark-color="$textLight400" alignSelf="center" >
 				{`Hello, ${userContext?.user?.name}!`}
 			</Heading>
+			<Divider height={2} marginVertical="$3" />
 
+			{
+				menu instanceof Array &&
+				<ScrollView>
+					{menu.slice(0, 2)}
+					<Divider height={2} />
+					{menu.slice(2)}
 
-			<DrawerContentScrollView   >
-				<DrawerItemList {...drProps} />
-
-
-			</DrawerContentScrollView >
+				</ScrollView>
+			}
 
 
 			<View justifyContent="flex-end" marginBottom="$6">

@@ -20,6 +20,7 @@ import * as SecureStore from 'expo-secure-store';
 import { UserContext } from '../utils/userContext'
 import { useContext } from 'react';
 import { Platform } from "react-native";
+import { User } from "@/types/user";
 
 
 export default function Login() {
@@ -27,7 +28,7 @@ export default function Login() {
 	const [errors, setErrors] = useState({ errors: [] });
 
 	const [form, setForm] = useState({
-		// for dev
+		// for dev del
 		email: "john.doe@example.com",
 		password: "Password123"
 		// email: "",
@@ -50,11 +51,8 @@ export default function Login() {
 		setErrors({ errors: [] });
 		try {
 			const res = await api.post('/api/users/login', form);
-			const { name, token } = res.data as { name: string, token: string };
-
-
-
-			userContext?.setUser({ name });
+			const { user, token } = res.data as { user: User, token: string };
+			userContext?.setUser(user);
 			if (Platform.OS != 'web') {
 				await SecureStore.setItemAsync("AUTH_TOKEN", token);
 			}
@@ -63,19 +61,20 @@ export default function Login() {
 			router.replace('menu');
 
 		} catch (error) {
+
 			if (axios.isAxiosError(error)) {
+
 				if (error.response?.status === 400) {
 					setErrors(error.response?.data);
 				}
 				else {
-					setForm({
-						email: "",
-						password: ""
-					});
+	
+					
 					toast.show({
 						placement: "bottom",
 						render: ({ id }) => {
 							const toastId = "toast-" + id
+							
 							return (
 								<Toast marginBottom="$16" nativeID={toastId} action="error" variant="accent">
 									<ToastTitle>
@@ -85,6 +84,12 @@ export default function Login() {
 							)
 						},
 					})
+									
+					setForm({
+						email: "",
+						password: ""
+					});
+					
 				}
 			}
 		}

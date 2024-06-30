@@ -43,7 +43,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
 			.then((res) => {
 
 				setIsOpen(false);
-				setUser({ name: res.data.name as string });
+				setUser(res.data as User);
 				router.replace('/menu');
 			})
 			.catch((error) => {
