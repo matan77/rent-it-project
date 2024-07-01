@@ -27,8 +27,8 @@ export default {
 		}
 		const owner = res.locals.userId;
 		try {
-			const token = await propertiesService.createProperty({ owner, ...req.body });
-			res.status(201).json({ name, token });
+			await propertiesService.createProperty({ owner, ...req.body });
+			res.status(201).json({ msg: "property created" });
 		} catch (error) {
 			if (error instanceof ResError)
 				res.status(error.status).json({ msg: error.message });
