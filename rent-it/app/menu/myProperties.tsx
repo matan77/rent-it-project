@@ -37,32 +37,3 @@ export default function myProperties() {
 		</View >
 	);
 };
-
-const styles = StyleSheet.create({
-	item: {
-		padding: 20,
-		marginVertical: 10,
-		backgroundColor: '#f9c2ff',
-		borderRadius: 10,
-	},
-	addButton: {
-		position: 'absolute',
-		right: 20,
-		bottom: 20,
-		backgroundColor: '#6200ee',
-		borderRadius: 30,
-		width: 60,
-		height: 60,
-		justifyContent: 'center',
-		alignItems: 'center',
-		shadowColor: '#000',
-		shadowOffset: { width: 0, height: 2 },
-		shadowOpacity: 0.8,
-		shadowRadius: 2,
-		elevation: 5,
-	},
-	addButtonText: {
-		color: '#fff',
-		fontSize: 20,
-	},
-});

@@ -31,4 +31,22 @@ export default {
 			throw new ResError(500, 'An error occurred while creating the property');
 		}
 	},
+	
+	setImagesById: async (propertyId: mongoose.Types.ObjectId, images: string[]) => {
+		try {
+			const updatedProperty = await Property.findByIdAndUpdate(
+				propertyId,
+				{ $push: { images: { $each: images } } },
+				{ new: true }
+			);
+
+			if (!updatedProperty) {
+				throw new ResError(404, 'Property not found');
+			}
+
+
+		} catch (error) {
+			throw new ResError(500, 'An error occurred while updating images for the property');
+		}
+	},
 };

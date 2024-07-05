@@ -13,6 +13,7 @@ interface IProperty {
 	title: string;
 	description: string;
 	services: string[];
+	images: string[];
 	pricePerNight: number;
 	location: {
 		type: "Point";
@@ -30,6 +31,10 @@ const propertySchema = new Schema<IProperty>({
 	title: {
 		type: String,
 		required: true
+	},
+	images: {
+		type: [String],
+		default: []
 	},
 	description: {
 		type: String,

@@ -12,9 +12,13 @@ import { useState } from 'react';
 import { icons } from 'lucide-react-native';
 
 
+interface ServicesPickerProps {
+	services: string[];
+	setServices: React.Dispatch<React.SetStateAction<string[]>>;
+}
 
-export default function ServicesPicker() {
-	const [services, setServices] = useState<string[]>([])
+
+export default function ServicesPicker({ services, setServices }: ServicesPickerProps) {
 	const allServices = ['Wi-Fi', 'Parking', 'Pool', 'Air Conditioning', 'Gym', 'Laundry', 'Kitchen']
 	const servicesIcons = [
 		icons["Wifi"],
