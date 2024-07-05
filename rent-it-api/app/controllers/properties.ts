@@ -13,7 +13,7 @@ const propertyValidation = [
 		}),
 	body('pricePerNight').notEmpty().withMessage('Price per night is required').isNumeric().withMessage('Price per night must be a number').bail()
 		.custom(value => parseInt(value) > 0).withMessage('Price per night must be greater than zero'),
-	body('coordinates').notEmpty().withMessage('Coordinates are required').isArray().withMessage('Coordinates must be an array with [longitude, latitude] format')
+	body('coordinates').notEmpty().withMessage('location is required').isArray().withMessage('Coordinates must be an array with [longitude, latitude] format')
 		.custom(values => values.length === 2 && values.every((coord: any) => typeof coord === 'number')).withMessage('Coordinates must be an array of two numbers [longitude, latitude]')
 
 ];

@@ -11,8 +11,9 @@ import {
 import { useColorScheme, Alert } from 'react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import * as Location from 'expo-location';
+import { darkModeMap } from '@/utils/mapStyle';
 
 const LocationPicker = forwardRef<BottomSheetModal,
 	{
@@ -30,8 +31,12 @@ const LocationPicker = forwardRef<BottomSheetModal,
 
 
 
+
 		const handleSheetChanges = (index: number) => {
-			setIsLocationOpen(index != -1);
+			if (index !== -1 && !location) {
+				getDeviceLocation();
+			}
+			setIsLocationOpen(index !== -1);
 		};
 
 		const getDeviceLocation = async () => {
@@ -49,20 +54,23 @@ const LocationPicker = forwardRef<BottomSheetModal,
 		const getPermission = (async () => {
 			let { status } = await Location.requestForegroundPermissionsAsync();
 			if (status !== 'granted') {
-				Alert.alert('Permission', 'Permission to access location was denied.');
+				Alert.alert('Permission', 'Permission to access location was denied');
 
 				closeLocationModal();
 				return;
 
 			}
 
-			await getDeviceLocation();
 		});
+
 		useEffect(() => {
 
 			if (isLocationOpen)
 				getPermission();
 		}, [isLocationOpen]);
+
+
+
 
 		const handleSearch = async () => {
 			try {
@@ -86,11 +94,11 @@ const LocationPicker = forwardRef<BottomSheetModal,
 					});
 
 				} else {
-					Alert.alert('Location not found', 'Please try again with a different search term.');
+					Alert.alert('Location not found', 'Please try again with a different search term');
 				}
 			} catch (error) {
 				console.error(error);
-				Alert.alert('Error', 'An error occurred while searching for the location.');
+				Alert.alert('Error', 'An error occurred while searching for the location');
 			}
 		};
 
@@ -100,6 +108,7 @@ const LocationPicker = forwardRef<BottomSheetModal,
 		return (
 			<BottomSheetModalProvider>
 				<BottomSheetModal
+					handleIndicatorStyle={{ backgroundColor: colorScheme === "dark" ? "white" : "black" }}
 					ref={ref}
 					enableContentPanningGesture={false}
 					containerStyle={{
@@ -110,10 +119,10 @@ const LocationPicker = forwardRef<BottomSheetModal,
 					snapPoints={snapPoints}
 					onChange={handleSheetChanges}
 				>
-					<BottomSheetView >
+					<BottomSheetView>
 						<VStack paddingBottom={'$10'}>
 							<View marginHorizontal="$5">
-								<Input size='lg' mb="$10">
+								<Input size='lg' mb="$3">
 									<InputSlot paddingStart="$3" onPress={handleSearch}>
 										<InputIcon as={SearchIcon} />
 									</InputSlot>
@@ -135,11 +144,13 @@ const LocationPicker = forwardRef<BottomSheetModal,
 							{location && (
 
 								<MapView
+									provider={PROVIDER_GOOGLE}
+									customMapStyle={colorScheme === "dark" ? darkModeMap : []}
 									ref={mapRef}
 									style={{
 										margin: 5,
 										width: '100%',
-										height: '75%',
+										height: '81%',
 									}}
 									initialRegion={{
 										latitude: location.latitude,
