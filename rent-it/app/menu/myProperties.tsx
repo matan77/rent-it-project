@@ -24,7 +24,7 @@ export default function myProperties() {
 				keyExtractor={item => item.id}
 				contentContainerStyle={{ paddingHorizontal: 10, }}
 			/>
-			<Fab onPress={() => { router.push('addProperty') }}
+			<Fab onPress={() => { router.push('/addProperty') }}
 				placement='bottom right'
 				elevation={5}
 				p="$3.5"

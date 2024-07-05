@@ -74,11 +74,11 @@ export default function Login() {
 						placement: "bottom",
 						render: ({ id }) => {
 							const toastId = "toast-" + id
-							
+						
 							return (
 								<Toast marginBottom="$16" nativeID={toastId} action="error" variant="accent">
 									<ToastTitle>
-										{error.response?.data.msg}
+										{error?.response?.data?.msg}
 									</ToastTitle>
 								</Toast>
 							)

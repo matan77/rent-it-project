@@ -1,7 +1,6 @@
 import { Divider, Image, Heading, View, ScrollView } from "@gluestack-ui/themed"
 import {
 	DrawerContentComponentProps,
-	DrawerContentScrollView,
 	DrawerItem,
 	DrawerItemList,
 } from '@react-navigation/drawer';

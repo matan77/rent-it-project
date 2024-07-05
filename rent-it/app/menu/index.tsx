@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 
 
 export default function Home() {
-	console.log(12323123);
+	// for dev del
 	useEffect(() => {
 		router.push('/menu/myProperties')
 	}, [])
