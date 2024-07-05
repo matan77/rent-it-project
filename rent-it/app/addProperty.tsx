@@ -3,7 +3,9 @@ import {
 	View, FormControl, Input, InputField, FormControlError, FormControlErrorIcon, FormControlErrorText, AlertCircleIcon,
 	VStack, Textarea, TextareaInput, Toast, useToast, ToastTitle,
 	ScrollView,
-	ButtonSpinner
+	ButtonSpinner,
+	FormControlHelper,
+	FormControlHelperText
 } from '@gluestack-ui/themed';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
@@ -84,12 +86,29 @@ export default function AddProperty() {
 			});
 
 
-			const response = await api.post('/api/properties', formData, {
+			await api.post('/api/properties', formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data',
 				},
 			});
 
+
+
+			toast.show({
+				placement: "bottom",
+				render: ({ id }) => {
+					const toastId = "toast-" + id
+
+					return (
+						<Toast marginBottom="$16" nativeID={toastId} action="success" variant="accent">
+							<ToastTitle>
+								Property Added
+							</ToastTitle>
+						</Toast>
+					)
+				}
+			});
+			setIsAdding(false);
 
 			router.replace('/menu/myProperties');
 		} catch (error) {
@@ -194,6 +213,11 @@ export default function AddProperty() {
 										keyboardType='decimal-pad'
 										type="text" placeholder="Price Per Night" value={form.pricePerNight.toString()} />
 								</Input>
+								<FormControlHelper>
+									<FormControlHelperText>
+										in dollars
+									</FormControlHelperText>
+								</FormControlHelper>
 								<FormControlError>
 
 									<FormControlErrorIcon as={AlertCircleIcon} />
@@ -213,8 +237,8 @@ export default function AddProperty() {
 
 
 							<Button size="lg" isDisabled={isAdding} variant="solid" action="positive" onPress={handleAdd}>
-								{isAdding && <ButtonSpinner />}
 								<ButtonText>Add</ButtonText>
+								{isAdding && <ButtonSpinner />}
 							</Button>
 						</VStack>
 
