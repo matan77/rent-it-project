@@ -1,32 +1,19 @@
 import React from 'react';
-import { Text, FlatList, ListRenderItem } from 'react-native';
 import { View, Button, ButtonIcon, AddIcon, Fab, FabIcon } from "@gluestack-ui/themed";
 import { router } from 'expo-router';
+import PropertiesLst from '@/components/properties_lst/PropertiesLst';
 
-interface Item {
-	id: string;
-	title: string;
-}
 
-const renderItem: ListRenderItem<Item> = ({ item }) => (
-	<View padding={20} marginVertical={20} bgColor='$primary300' >
-		<Text>{item.title}</Text>
-	</View>
-);
 
 export default function myProperties() {
-	const data = Array.from({ length: 20 }, (_, index) => ({ id: index.toString(), title: `Item ${index + 1}` }));
 
 
-
-	return (
+	return (	
 		<View flex={1}>
-			<FlatList
-				data={data}
-				renderItem={renderItem}
-				keyExtractor={item => item.id}
-				contentContainerStyle={{ paddingHorizontal: 10, }}
-			/>
+
+			<PropertiesLst/>
+
+			
 			<Fab onPress={() => { router.push('/addProperty') }}
 				placement='bottom right'
 				elevation={5}

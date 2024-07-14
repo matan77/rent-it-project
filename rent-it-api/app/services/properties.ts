@@ -49,4 +49,39 @@ export default {
 			throw new ResError(500, 'An error occurred while updating images for the property');
 		}
 	},
+
+	getProperties: async (userId?: mongoose.Types.ObjectId, page: number = 1, limit: number = 10, filter: string = '') => {
+		try {
+			const skip = (page - 1) * limit;
+
+			let sort = {};
+			if (filter === 'price_hl') {
+				sort = { pricePerNight: -1 };
+			} else if (filter === 'price_lh') {
+				sort = { pricePerNight: 1 };
+			} else {
+				sort = { createdAt: -1 };
+			}
+
+			const query = userId ? { owner: userId } : {};
+			
+			const properties = await Property.find(query,{ __v : 0})
+				.sort(sort)
+				.skip(skip)
+				.limit(limit)
+				.populate('owner', 'email phoneNumber')
+				.exec();
+
+			const totalProperties = await Property.countDocuments(query);
+			const totalPages = Math.ceil(totalProperties / limit);
+
+			return {
+				properties,
+				totalPages
+			};
+		} catch (error) {
+			throw new ResError(500, 'An error occurred while fetching properties');
+		}
+	},
+	
 };

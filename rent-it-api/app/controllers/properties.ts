@@ -84,5 +84,23 @@ export default {
 			}
 		}
 	],
+
+	getProperties: 
+		async (req: Request, res: Response) => {
+		const { page = 1, filter = '', isMy } = req.query;
+
+		const owner = res.locals.userId;
 	
+		try {
+			const result = await propertiesService.getProperties(
+				isMy ? owner : undefined,
+				parseInt(page as string),
+				undefined,
+				filter as string
+			);
+			res.json(result);
+		} catch (error) {
+			res.status(500).json({ msg: 'An error occurred while fetching properties' });
+		}
+	}
 };

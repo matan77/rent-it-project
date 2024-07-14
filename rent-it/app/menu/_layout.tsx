@@ -3,25 +3,23 @@ import { Drawer } from 'expo-router/drawer';
 import DrawerContent from '@/components/DrawerContent';
 import { useColorScheme } from 'react-native';
 import { Entypo, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import { Slot } from 'expo-router';
 
 
 export default function Layout() {
 	const colorScheme = useColorScheme();
 
 	return (
-		<GestureHandlerRootView >
+		<GestureHandlerRootView  >
 
 
 			<Drawer screenOptions={
 				{
 					drawerLabelStyle: { marginLeft: -24 },
-					sceneContainerStyle: { backgroundColor: colorScheme === "dark" ? "#262626" : "#ffffff" },
-					headerTintColor: colorScheme === "dark" ? "#d6d3d1" : "#000000",
 					title: "",
-					headerStyle: {
-						backgroundColor: colorScheme === "dark" ? "#262626" : "#ffffff",
-
-					}
+					sceneContainerStyle: {backgroundColor: colorScheme === "dark" ? "#262626" : "#ffffff" },
+					headerTintColor: colorScheme === "dark" ? "#d6d3d1" : "#000000",
+					headerTransparent: true,
 				}
 			}
 				backBehavior='history' drawerContent={DrawerContent}>
@@ -29,7 +27,7 @@ export default function Layout() {
 				<Drawer.Screen
 					name="index"
 					options={{
-
+						title: "Home",
 						drawerLabel: 'Home',
 						drawerIcon: ({ color, size, focused }) => { return <Entypo name="home" size={size} color={color} /> }
 					}}

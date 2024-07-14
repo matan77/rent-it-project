@@ -7,9 +7,9 @@ import {
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
-import { GluestackUIProvider, Box } from "@gluestack-ui/themed";
+import { GluestackUIProvider, Box, SafeAreaView } from "@gluestack-ui/themed";
 import { config } from "@gluestack-ui/config";
-import { useColorScheme } from "react-native";
+import { useColorScheme,  } from "react-native";
 import { Slot } from "expo-router";
 import { UserProvider } from '../utils/userContext'
 
