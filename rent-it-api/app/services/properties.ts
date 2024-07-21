@@ -31,7 +31,7 @@ export default {
 			throw new ResError(500, 'An error occurred while creating the property');
 		}
 	},
-	
+
 	setImagesById: async (propertyId: mongoose.Types.ObjectId, images: string[]) => {
 		try {
 			const updatedProperty = await Property.findByIdAndUpdate(
@@ -50,7 +50,7 @@ export default {
 		}
 	},
 
-	getProperties: async (userId?: mongoose.Types.ObjectId, page: number = 1, limit: number = 10, filter: string = '') => {
+	getProperties: async (isMy: boolean, userId: mongoose.Types.ObjectId, page: number = 1, limit: number = 10, filter: string = '') => {
 		try {
 			const skip = (page - 1) * limit;
 
@@ -63,9 +63,10 @@ export default {
 				sort = { createdAt: -1 };
 			}
 
-			const query = userId ? { owner: userId } : {};
-			
-			const properties = await Property.find(query,{ __v : 0})
+			const query = isMy ? { owner: userId } : { owner: { $ne: userId } };
+
+	
+			const properties = await Property.find(query, { __v: 0 })
 				.sort(sort)
 				.skip(skip)
 				.limit(limit)
@@ -83,5 +84,5 @@ export default {
 			throw new ResError(500, 'An error occurred while fetching properties');
 		}
 	},
-	
+
 };

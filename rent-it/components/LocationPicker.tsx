@@ -33,9 +33,6 @@ const LocationPicker = forwardRef<BottomSheetModal,
 
 
 		const handleSheetChanges = (index: number) => {
-			if (index !== -1 && !location) {
-				getDeviceLocation();
-			}
 			setIsLocationOpen(index !== -1);
 		};
 
@@ -44,29 +41,29 @@ const LocationPicker = forwardRef<BottomSheetModal,
 			setLocation(res.coords);
 			if (location) {
 				mapRef.current?.animateToRegion({
-					latitude: location.latitude,
-					longitude: location.longitude,
+					latitude: res.coords.latitude,
+					longitude: res.coords.longitude,
 					latitudeDelta: 0.001,
 					longitudeDelta: 0.001,
 				});
 			}
 		}
-		const getPermission = (async () => {
-			let { status } = await Location.requestForegroundPermissionsAsync();
-			if (status !== 'granted') {
+		const getPermission = async () => {
+			let { granted } = await Location.requestForegroundPermissionsAsync();
+			if (!granted) {
 				Alert.alert('Permission', 'Permission to access location was denied');
-
 				closeLocationModal();
+
 				return;
-
 			}
-
-		});
+			getDeviceLocation();
+		};
 
 		useEffect(() => {
 
 			if (isLocationOpen)
 				getPermission();
+
 		}, [isLocationOpen]);
 
 

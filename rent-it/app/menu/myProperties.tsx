@@ -1,19 +1,22 @@
 import React from 'react';
-import { View, Button, ButtonIcon, AddIcon, Fab, FabIcon } from "@gluestack-ui/themed";
+import { View, Button, Heading, AddIcon, Fab, FabIcon } from "@gluestack-ui/themed";
 import { router } from 'expo-router';
 import PropertiesLst from '@/components/properties_lst/PropertiesLst';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 
 export default function myProperties() {
 
 
-	return (	
-		<View flex={1}>
+	return (
+		<SafeAreaView style={{ flex: 1 }}>
+			<Heading color="$text900" $dark-color="$white" alignSelf="center" lineHeight="$md" marginTop="$5" >
+				My Properties
+			</Heading>
+			<PropertiesLst isMy={true} filter="" />
 
-			<PropertiesLst/>
 
-			
 			<Fab onPress={() => { router.push('/addProperty') }}
 				placement='bottom right'
 				elevation={5}
@@ -24,6 +27,6 @@ export default function myProperties() {
 				<FabIcon as={AddIcon} size='xl' />
 			</Fab>
 
-		</View >
+		</SafeAreaView >
 	);
 };

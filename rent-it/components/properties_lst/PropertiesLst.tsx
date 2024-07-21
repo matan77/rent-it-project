@@ -1,59 +1,42 @@
 import api from '@/utils/api';
 import React, { useState, useEffect } from 'react';
-import { Dimensions, RefreshControlProps } from 'react-native';
-import { View, Text, FlatList, RefreshControl, useToken, useTheme, useColorMode } from '@gluestack-ui/themed';
+import { View, Text, FlatList, RefreshControl, Spinner } from '@gluestack-ui/themed';
 import { useColorScheme } from 'react-native';
+import PropertyItem from '@/components/properties_lst/PropertyItem';
+import { Property } from '@/types/property';
 
-
-const MyRefreshControl = ({
-	refreshing,
-	onRefresh,
-	...props
-}: RefreshControlProps) => {
-	const colorMode = useColorScheme();
-	if (!colorMode) {
-		return;
-	}
-	console.log(colorMode === "dark");
-
-	return (colorMode === "dark") ?
-		<RefreshControl backgroundColor='$amber300' progressBackgroundColor={useToken("colors", "backgroundDark700")} colors={["white"]}
-			refreshing={refreshing} onRefresh={onRefresh}     {...props} />
-		: <RefreshControl refreshing={refreshing} onRefresh={onRefresh}     {...props} />
-};
-
-
-export default function PropertiesLst() {
+export default function PropertiesLst({ isMy, filter }: { isMy: boolean, filter: string }) {
 	const color = useColorScheme();
-	const [data, setData] = useState([]);
+	const [data, setData] = useState<Property[]>([]);
 	const [page, setPage] = useState(1);
+	const [totalPages, setTotalPages] = useState(-1);
 	const [loading, setLoading] = useState(false);
 	const [refreshing, setRefreshing] = useState(false);
 
+
 	useEffect(() => {
 		fetchData();
-
-
 	}, []);
 
-	const fetchData = async (isRefresh = false) => {
+	const fetchData = async () => {
 		if (loading) return;
 
 		setLoading(true);
 
-		const currentPage = isRefresh ? 1 : page;
+
 
 		try {
-			const res = await api.get(`/api/properties?page=${currentPage}`);
-			const result = res.data.properties;
 
-			if (isRefresh) {
-				setData(result);
-			} else {
-				setData(prevData => [...prevData, ...result]);
+			const res = await api.get(`/api/properties?page=${page}&isMy=${isMy}&filter=${filter}`);
+			const result = res.data.properties;
+			setTotalPages(res.data.totalPages);
+
+
+			setData(prevData => [...prevData, ...result]);
+			if (page < totalPages) {
+				setPage(page + 1);
 			}
 
-			setPage(currentPage + 1);
 		} catch (error) {
 			console.error(error);
 		} finally {
@@ -63,41 +46,55 @@ export default function PropertiesLst() {
 	};
 
 	const handleRefresh = () => {
-		setRefreshing(true);
-		fetchData(true);
-	};
-
-	const handleLoadMore = () => {
+		setPage(1);
 		fetchData();
 	};
 
+	const handleLoadMore = () => {
+		if (!loading && page <= totalPages) {
+			fetchData();
+		}
+	};
+
+	const renderFooter = () => {
+		if (!loading) return null;
+		return (
+			<View padding={20} alignItems='center'>
+				<Spinner size="large" color={color === "light" ? "black" : "white"} />
+			</View>
+		);
+	};
 
 
-	const renderItem = ({ item }) => (
-		<View style={{ padding: 20 }}>
-			<Text>{item.title}</Text>
-		</View>
-	);
+	const listEmptyComponent = () => {
+		return (
+			<View flex={1}  padding={20} alignSelf='center' justifyContent='center'>
+				<Text>no properties uploaded</Text>
+			</View>
+		);
+	};
 
-	const initialNumToRender = Math.ceil(Dimensions.get('window').height / 80);
-
-
-
-	return <FlatList
+	return (
+		<FlatList
+			ListEmptyComponent={listEmptyComponent}
 			data={data}
+			contentContainerStyle={{ flexGrow: 1 }}
 			keyExtractor={(item, index) => index.toString()}
-			renderItem={renderItem}
+			renderItem={({ item }) => <PropertyItem data={item as Property} />}
 			onEndReached={handleLoadMore}
-			onEndReachedThreshold={0}
+			onEndReachedThreshold={0.5}
 			refreshControl={
-				<RefreshControl progressBackgroundColor={color === "light" ? "white": "#525252" } colors={color ==="light"? ["black"]: ["white"]}    refreshing={refreshing} onRefresh={handleRefresh} />
-
+				<RefreshControl
+					tintColor={color === "light" ? "black" : "white"}
+					progressBackgroundColor={color === "light" ? "white" : "#525252"}
+					colors={color === "light" ? ["black"] : ["white"]}
+					refreshing={refreshing}
+					onRefresh={handleRefresh}
+				/>
 			}
 			refreshing={refreshing}
 			onRefresh={handleRefresh}
-			initialNumToRender={initialNumToRender}
-			maxToRenderPerBatch={initialNumToRender + 10}
-			windowSize={initialNumToRender + 21}
-		/>;
+			ListFooterComponent={renderFooter}
+		/>
+	);
 };
-//	<RefreshControl progressBackgroundColor={useToken("colors", "backgroundDark700")} colors={["white"]} refreshing={refreshing} onRefresh={handleRefresh} />

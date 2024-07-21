@@ -6,6 +6,6 @@ const router: Router = express.Router();
 
 
 router.post('/', [authenticateJWT, isDeleted, ...propertiesController.createProperty]);
-router.get('/',  propertiesController.getProperties);
+router.get('/', [authenticateJWT, isDeleted, propertiesController.getProperties]);
 
 export default router;

@@ -90,12 +90,13 @@ export default {
 		const { page = 1, filter = '', isMy } = req.query;
 
 		const owner = res.locals.userId;
-	
+			
 		try {
 			const result = await propertiesService.getProperties(
-				isMy ? owner : undefined,
+				(isMy &&  typeof isMy === 'string'	&& isMy.trim().toLowerCase() === 'true') ? true :false,
+				owner,
 				parseInt(page as string),
-				undefined,
+				2,
 				filter as string
 			);
 			res.json(result);

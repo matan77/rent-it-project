@@ -40,9 +40,11 @@ export default function AddProperty() {
 	const [services, setServices] = useState<string[]>([])
 
 	const showLocationModal = () => {
+		setIsLocationOpen(true);
 		locationPickerRef.current?.present();
 	};
 	const closeLocationModal = () => {
+		setIsLocationOpen(false);
 		locationPickerRef.current?.dismiss();
 	};
 
@@ -157,8 +159,8 @@ export default function AddProperty() {
 
 		<SafeAreaView style={{ flex: 1 }}>
 
-			<GestureHandlerRootView style={{ flex: 1 }}>
-				<View pointerEvents={isLocationOpen ? 'none' : 'auto'} >
+			<GestureHandlerRootView style={{ flex: 1 }} >
+				<View style={{ flex: 1 }} pointerEvents={isLocationOpen ? 'none' : 'auto'} >
 
 
 					<Button variant="link" p="$0" size="lg" position='absolute' left={10} top={10} onPress={router.back}  >
@@ -168,8 +170,8 @@ export default function AddProperty() {
 					<Heading color="$text900" $dark-color="$white" alignSelf="center" lineHeight="$md" marginTop="$5" >
 						Add new property
 					</Heading>
-					<ScrollView>
-						<VStack space='lg' marginHorizontal="$5" marginTop="$4">
+					<ScrollView style={{ flex: 1 }}>
+						<VStack space='lg' marginHorizontal="$5" marginVertical="$4">
 
 
 
