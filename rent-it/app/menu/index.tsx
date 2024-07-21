@@ -21,7 +21,7 @@ export default function Home() {
 				Home
 			</Heading>
 
-			<Button onPress={onFilterChange} size="md" variant="solid" action="primary"  alignSelf='flex-end' m="$2">
+			<Button onPress={onFilterChange} size="md" variant="solid" action="primary" alignSelf='flex-end' m="$2">
 				{
 					filters[filter] ? <ButtonText>By price</ButtonText> :
 						<ButtonText>By date</ButtonText>
@@ -31,7 +31,7 @@ export default function Home() {
 
 			</Button>
 
-
+			{/* false */}
 			<PropertiesLst isMy={true} filter={filters[filter]} />
 		</SafeAreaView >
 	);

@@ -7,11 +7,15 @@ import {
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
-import { GluestackUIProvider, Box, SafeAreaView } from "@gluestack-ui/themed";
+import { GluestackUIProvider, Box } from "@gluestack-ui/themed";
 import { config } from "@gluestack-ui/config";
-import { useColorScheme,  } from "react-native";
+import { Platform, useColorScheme, } from "react-native";
 import { Slot } from "expo-router";
 import { UserProvider } from '../utils/userContext'
+import * as NavigationBar from "expo-navigation-bar";
+
+
+
 
 export {
 	// Catch any errors thrown by the Layout component.
@@ -43,7 +47,10 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
 	const colorScheme = useColorScheme();
-
+	if (Platform.OS !== "web") {
+		NavigationBar.setPositionAsync("absolute");
+		NavigationBar.setBackgroundColorAsync("#00000000");
+	}
 	return (
 		<GluestackUIProvider config={config} colorMode={colorScheme === "dark" ? "dark" : "light"}>
 			<ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>

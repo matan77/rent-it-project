@@ -3,7 +3,6 @@ import { Drawer } from 'expo-router/drawer';
 import DrawerContent from '@/components/DrawerContent';
 import { useColorScheme } from 'react-native';
 import { Entypo, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
-import { Slot } from 'expo-router';
 
 
 export default function Layout() {
