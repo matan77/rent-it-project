@@ -53,9 +53,9 @@ export default function PropertyItem({ data }: { data: Property }) {
 
 			<Heading mb="$1" size="md">{data.title}</Heading>
 			<Text mb="$2" size="sm">{data.description}</Text>
-			<View flex={1} flexDirection='row' justifyContent='space-between' >
+			<View flex={1} flexDirection='row' justifyContent='space-between'  mb="$2">
 
-				<Button onPress={viewProperty} size="lg" variant="solid" action="primary" alignSelf='flex-start' >
+				<Button onPress={viewProperty} size="md" variant="outline" action="primary" alignSelf='flex-start' >
 					<ButtonText>See More</ButtonText>
 				</Button>
 				<VStack>
