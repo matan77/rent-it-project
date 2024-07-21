@@ -129,27 +129,6 @@ export default function profile() {
 			</FormControl>
 
 
-			{/* <FormControl isInvalid={passwordError !== undefined}>
-				<Input size="lg">
-					<InputField onChangeText={(password: string) => setForm({ ...form, password })}
-						type={showPassword ? "text" : "password"} value={form.password} placeholder="Password" />
-					<InputSlot pr="$3" onPress={handleState}>
-						<InputIcon
-							as={showPassword ? EyeIcon : EyeOffIcon}
-							color="$darkBlue500"
-						/>
-					</InputSlot>
-
-				</Input>
-				<FormControlError>
-					<FormControlErrorIcon as={AlertCircleIcon} />
-					<FormControlErrorText >
-						{passwordError?.msg}
-					</FormControlErrorText>
-				</FormControlError>
-			</FormControl> */}
-
-
 			<Button onPress={handleSave}>
 				<ButtonText >Save Changes</ButtonText>
 			</Button>

@@ -13,30 +13,22 @@ export default function PropertiesLst({ isMy, filter }: { isMy: boolean, filter:
 	const [loading, setLoading] = useState(false);
 	const [refreshing, setRefreshing] = useState(false);
 
-
-	useEffect(() => {
-		fetchData();
-	}, []);
-
-	const fetchData = async () => {
+	const fetchData = async (pageNum = page, isRefresh = false) => {
 		if (loading) return;
 
 		setLoading(true);
 
-
-
 		try {
-
-			const res = await api.get(`/api/properties?page=${page}&isMy=${isMy}&filter=${filter}`);
+			const res = await api.get(`/api/properties?page=${pageNum}&isMy=${isMy}&filter=${filter}`);
 			const result = res.data.properties;
-			setTotalPages(res.data.totalPages);
 
-
-			setData(prevData => [...prevData, ...result]);
-			if (page < totalPages) {
-				setPage(page + 1);
+			if (isRefresh) {
+				setData(result);
+			} else {
+				setData(prevData => [...prevData, ...result]);
 			}
 
+			setTotalPages(res.data.totalPages);
 		} catch (error) {
 			console.error(error);
 		} finally {
@@ -46,13 +38,16 @@ export default function PropertiesLst({ isMy, filter }: { isMy: boolean, filter:
 	};
 
 	const handleRefresh = () => {
+		setRefreshing(true);
 		setPage(1);
-		fetchData();
+		fetchData(1, true);
 	};
 
 	const handleLoadMore = () => {
-		if (!loading && page <= totalPages) {
-			fetchData();
+		if (!loading && !refreshing && page < totalPages) {
+			const nextPage = page + 1;
+			setPage(nextPage);
+			fetchData(nextPage);
 		}
 	};
 
@@ -60,19 +55,26 @@ export default function PropertiesLst({ isMy, filter }: { isMy: boolean, filter:
 		if (!loading) return null;
 		return (
 			<View padding={20} alignItems='center'>
-				<Spinner size="large" color={color === "light" ? "black" : "white"} />
+				<Spinner size="large" />
 			</View>
 		);
 	};
 
-
 	const listEmptyComponent = () => {
 		return (
-			<View flex={1}  padding={20} alignSelf='center' justifyContent='center'>
+			<View flex={1} padding={20} alignSelf='center' justifyContent='center'>
 				<Text>no properties uploaded</Text>
 			</View>
 		);
 	};
+
+	useEffect(() => {
+		fetchData(page, refreshing);
+	}, [page]);
+
+	useEffect(() => {
+		handleRefresh();
+	}, [filter]);
 
 	return (
 		<FlatList
@@ -82,7 +84,7 @@ export default function PropertiesLst({ isMy, filter }: { isMy: boolean, filter:
 			keyExtractor={(item, index) => index.toString()}
 			renderItem={({ item }) => <PropertyItem data={item as Property} />}
 			onEndReached={handleLoadMore}
-			onEndReachedThreshold={0.5}
+			onEndReachedThreshold={0.3}
 			refreshControl={
 				<RefreshControl
 					tintColor={color === "light" ? "black" : "white"}
@@ -92,8 +94,6 @@ export default function PropertiesLst({ isMy, filter }: { isMy: boolean, filter:
 					onRefresh={handleRefresh}
 				/>
 			}
-			refreshing={refreshing}
-			onRefresh={handleRefresh}
 			ListFooterComponent={renderFooter}
 		/>
 	);

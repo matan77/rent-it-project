@@ -53,7 +53,10 @@ export default {
 	getProperties: async (isMy: boolean, userId: mongoose.Types.ObjectId, page: number = 1, limit: number = 10, filter: string = '') => {
 		try {
 			const skip = (page - 1) * limit;
-
+			console.log(skip);
+			console.log(limit);
+			console.log(filter==='');
+			
 			let sort = {};
 			if (filter === 'price_hl') {
 				sort = { pricePerNight: -1 };

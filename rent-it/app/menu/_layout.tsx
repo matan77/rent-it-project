@@ -27,7 +27,6 @@ export default function Layout() {
 				<Drawer.Screen
 					name="index"
 					options={{
-						title: "Home",
 						drawerLabel: 'Home',
 						drawerIcon: ({ color, size, focused }) => { return <Entypo name="home" size={size} color={color} /> }
 					}}
