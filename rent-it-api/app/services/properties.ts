@@ -55,8 +55,8 @@ export default {
 			const skip = (page - 1) * limit;
 			console.log(skip);
 			console.log(limit);
-			console.log(filter==='');
-			
+			console.log(filter === '');
+
 			let sort = {};
 			if (filter === 'price_hl') {
 				sort = { pricePerNight: -1 };
@@ -68,7 +68,7 @@ export default {
 
 			const query = isMy ? { owner: userId } : { owner: { $ne: userId } };
 
-	
+
 			const properties = await Property.find(query, { __v: 0 })
 				.sort(sort)
 				.skip(skip)
@@ -85,6 +85,21 @@ export default {
 			};
 		} catch (error) {
 			throw new ResError(500, 'An error occurred while fetching properties');
+		}
+	},
+	getPropertyById: async (id: string) => {
+		try {
+			const property = await Property.findById(id, { __v: 0 })
+				.populate('owner', 'email phoneNumber')
+				.exec();
+
+			if (!property) {
+				throw new ResError(404, 'Property not found');
+			}
+
+			return property;
+		} catch (error) {
+			throw new ResError(500, 'An error occurred while fetching the property');
 		}
 	},
 

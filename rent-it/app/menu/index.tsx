@@ -26,8 +26,8 @@ export default function Home() {
 					filters[filter] ? <ButtonText>By price</ButtonText> :
 						<ButtonText>By date</ButtonText>
 				}
-				{filters[filter] === 'price_lh' && <ButtonIcon m="$2" w="$5" h="$5" as={ArrowUpIcon} />}
-				{filters[filter] === 'price_hl' && <ButtonIcon m="$2" w="$5" h="$5" as={ArrowDownIcon} />}
+				{filters[filter] === 'price_lh' && <ButtonIcon marginLeft="$2" marginRight="-$2" w="$5" h="$5" as={ArrowUpIcon} />}
+				{filters[filter] === 'price_hl' && <ButtonIcon marginLeft="$2" marginRight="-$2" w="$5" h="$5" as={ArrowDownIcon} />}
 
 			</Button>
 

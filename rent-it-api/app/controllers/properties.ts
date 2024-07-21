@@ -1,4 +1,4 @@
-import { body, validationResult } from "express-validator";
+import { body, param, validationResult } from "express-validator";
 import { NextFunction, Request, Response } from 'express';
 import Property, { Services } from '../models/Property';
 import propertiesService from '../services/properties'
@@ -85,23 +85,46 @@ export default {
 		}
 	],
 
-	getProperties: 
+	getProperties:
 		async (req: Request, res: Response) => {
-		const { page = 1, filter = '', isMy } = req.query;
+			const { page = 1, filter = '', isMy } = req.query;
 
-		const owner = res.locals.userId;
-			
-		try {
-			const result = await propertiesService.getProperties(
-				(isMy &&  typeof isMy === 'string'	&& isMy.trim().toLowerCase() === 'true') ? true :false,
-				owner,
-				parseInt(page as string),
-				2,
-				filter as string
-			);
-			res.json(result);
-		} catch (error) {
-			res.status(500).json({ msg: 'An error occurred while fetching properties' });
-		}
-	}
+			const owner = res.locals.userId;
+
+			try {
+				const result = await propertiesService.getProperties(
+					(isMy && typeof isMy === 'string' && isMy.trim().toLowerCase() === 'true') ? true : false,
+					owner,
+					parseInt(page as string),
+					2,
+					filter as string
+				);
+				res.json(result);
+			} catch (error) {
+				res.status(500).json({ msg: 'An error occurred while fetching properties' });
+			}
+		},
+	getPropertyById: [
+		param('id').isMongoId().withMessage('Invalid property ID'),
+		async (req: Request, res: Response) => {
+			const { id } = req.params;
+
+			const errors = validationResult(req);
+
+			if (!errors.isEmpty()) {
+				return res.status(400).json({ errors: errors.array() });
+			}
+			try {
+				const property = await propertiesService.getPropertyById(id);
+
+				res.json(property);
+			} catch (error) {
+				if (error instanceof ResError) {
+					res.status(error.status).json({ msg: error.message });
+				} else {
+					console.error('Error fetching property by ID:', error);
+					res.status(500).json({ msg: 'Internal Server Error' });
+				}
+			}
+		}]
 };

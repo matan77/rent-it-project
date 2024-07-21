@@ -1,8 +1,14 @@
 import { Property } from '@/types/property';
 
 import { View, Text, Button, ButtonText, Card, Heading, ScrollView, Image, HStack, VStack } from '@gluestack-ui/themed';
+import { router } from 'expo-router';
 
 export default function PropertyItem({ data }: { data: Property }) {
+	const viewProperty = () => {
+		router.push(`/properties/${data._id}`)
+	}
+
+
 
 	return <>
 
@@ -49,8 +55,8 @@ export default function PropertyItem({ data }: { data: Property }) {
 			<Text mb="$2" size="sm">{data.description}</Text>
 			<View flex={1} flexDirection='row' justifyContent='space-between' >
 
-				<Button size="lg" variant="solid" action="primary" alignSelf='flex-start' >
-					<ButtonText>View</ButtonText>
+				<Button onPress={viewProperty} size="lg" variant="solid" action="primary" alignSelf='flex-start' >
+					<ButtonText>See More</ButtonText>
 				</Button>
 				<VStack>
 

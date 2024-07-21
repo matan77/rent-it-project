@@ -77,7 +77,7 @@ export default function PropertiesLst({ isMy, filter }: { isMy: boolean, filter:
 	}, [filter]);
 
 	return (
-		<FlatList
+		<FlatList alignSelf='center'
 			ListEmptyComponent={listEmptyComponent}
 			data={data}
 			contentContainerStyle={{ flexGrow: 1 }}
