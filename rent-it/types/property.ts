@@ -10,7 +10,7 @@ export type Property = {
         phoneNumber: string;
     };
     title: string;
-    images: string[]; // Assuming images is an array of strings representing image URLs
+    images: string[]; 
     description: string;
     services: string[];
     pricePerNight: number;

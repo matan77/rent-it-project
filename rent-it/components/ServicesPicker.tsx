@@ -1,7 +1,6 @@
 
 import {
-	Badge, BadgeIcon, GlobeIcon, View,
-
+	Badge, BadgeIcon, View,
 	Checkbox,
 	CheckboxGroup, Heading,
 	ScrollView,
