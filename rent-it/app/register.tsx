@@ -5,7 +5,7 @@ import {
 	useToast, Toast, ToastTitle,
 	Divider, HStack,
 	AlertCircleIcon,
-	ScrollView
+	ScrollView,
 } from "@gluestack-ui/themed";
 
 import { useState, useContext } from 'react';
@@ -34,6 +34,7 @@ export default function Register() {
 
 
 
+
 	const toast = useToast()
 
 	const nameError = findErrorByPath(errors.errors, "name");
@@ -49,6 +50,7 @@ export default function Register() {
 	}
 
 	const handleRegister = async () => {
+		let msg = "";
 		if (form.password !== form.confirmPassword) {
 			setCofError({ msg: "Password don't match" });
 			return;
@@ -56,21 +58,24 @@ export default function Register() {
 		setCofError(undefined);
 		try {
 			const res = await api.post('/api/users/register', form);
-
-			const token = res.data as string;
+			const token = res.data.token as string;
 			userContext?.setUser({
 				name: form.name,
 				email: form.email,
 				phoneNumber: form.phoneNumber
 			});
-			if (Platform.OS != 'web') {
-				await SecureStore.setItemAsync("AUTH_TOKEN", token);
-			}
-			api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
+			if (Platform.OS !== 'web') {
+				await SecureStore.setItemAsync("AUTH_TOKEN", token)
+			}
+
+			api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 			router.replace('menu');
+
+
+
 		} catch (error) {
-			if (axios.isAxiosError(error)) {
+			if (error && axios.isAxiosError(error)) {
 				if (error.response?.status === 400) {
 					setErrors(error.response?.data);
 				}
@@ -82,130 +87,135 @@ export default function Register() {
 						password: "",
 						confirmPassword: ""
 					});
-					toast.show({
-						placement: "bottom",
-						render: ({ id }) => {
-							const toastId = "toast-" + id
-							return (
-								<Toast marginBottom="$16" nativeID={toastId} action="error" variant="accent">
-									<ToastTitle>
-										{error.response?.data.msg}
-									</ToastTitle>
-								</Toast>
-							)
-						},
-					})
+					msg = error.response?.data.msg;
 				}
 			}
 		}
+		if (msg)
+			toast.show({
+				placement: "bottom",
+				render: ({ id }) => {
+					const toastId = "toast-" + id
+					return (
+						<Toast marginBottom="$16" nativeID={toastId} action="error" variant="accent">
+							<ToastTitle>
+								{msg}
+							</ToastTitle>
+						</Toast>
+					)
+				},
+			})
 	}
 
 
 	return <>
-		<KeyboardAvoidingView  behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+		<KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+			<ScrollView>
 
 
-			<VStack space="xl" paddingVertical="$10" $lg-width="15%" justifyContent="center" $lg-alignSelf="center" paddingHorizontal="$5">
-				<Image size="xl" alt='logo' alignSelf="center" source={require('../assets/images/favicon.png')}></Image>
-				<Heading color="$text900" $dark-color="$white" alignSelf="center" lineHeight="$md" marginBottom="$5">
-					Create your account
-				</Heading>
+				<VStack space="xl" paddingVertical="$10" $lg-width="15%" justifyContent="center" $lg-alignSelf="center" paddingHorizontal="$5">
+					<Image size="xl" alt='logo' alignSelf="center" source={require('../assets/images/favicon.png')}></Image>
+					<Heading color="$text900" $dark-color="$white" alignSelf="center" lineHeight="$md" marginBottom="$5">
+						Create your account
+					</Heading>
 
-				<FormControl isInvalid={nameError !== undefined}>
-					<Input size="lg">
-						<InputField onChangeText={(name: string) => setForm({ ...form, name })}
-							type="text" placeholder="name" value={form.name} />
-					</Input>
-					<FormControlError>
-						<FormControlErrorIcon as={AlertCircleIcon} />
-						<FormControlErrorText >
-							{nameError?.msg}
-						</FormControlErrorText>
-					</FormControlError>
-				</FormControl>
-
-
-				<FormControl isInvalid={phoneError !== undefined}>
-					<Input size="lg">
-						<InputField onChangeText={(phoneNumber: string) => setForm({ ...form, phoneNumber })}
-							type="text" placeholder="phone" value={form.phoneNumber} />
-					</Input>
-					<FormControlError>
-						<FormControlErrorIcon as={AlertCircleIcon} />
-						<FormControlErrorText >
-							{phoneError?.msg}
-						</FormControlErrorText>
-					</FormControlError>
-				</FormControl>
-
-				<FormControl isInvalid={emailError !== undefined}>
-					<Input size="lg">
-						<InputField onChangeText={(email: string) => setForm({ ...form, email })}
-							type="text" placeholder="Email" value={form.email} />
-					</Input>
-					<FormControlError>
-						<FormControlErrorIcon as={AlertCircleIcon} />
-						<FormControlErrorText >
-							{emailError?.msg}
-						</FormControlErrorText>
-					</FormControlError>
-				</FormControl>
+					<FormControl isInvalid={nameError !== undefined}>
+						<Input size="lg">
+							<InputField onChangeText={(name: string) => setForm({ ...form, name })}
+								type="text" placeholder="name" value={form.name} />
+						</Input>
+						<FormControlError>
+							<FormControlErrorIcon as={AlertCircleIcon} />
+							<FormControlErrorText >
+								{nameError?.msg}
+							</FormControlErrorText>
+						</FormControlError>
+					</FormControl>
 
 
-				<FormControl isInvalid={passwordError !== undefined}>
-					<Input size="lg">
-						<InputField onChangeText={(password: string) => setForm({ ...form, password })}
-							type={showPassword ? "text" : "password"} value={form.password} placeholder="Password" />
-						<InputSlot pr="$3" onPress={handleState}>
-							<InputIcon
-								as={showPassword ? EyeIcon : EyeOffIcon}
-								color="$darkBlue500"
-							/>
-						</InputSlot>
+					<FormControl isInvalid={phoneError !== undefined}>
+						<Input size="lg">
+							<InputField onChangeText={(phoneNumber: string) => setForm({ ...form, phoneNumber })}
+								type="text" placeholder="phone" value={form.phoneNumber} />
+						</Input>
+						<FormControlError>
+							<FormControlErrorIcon as={AlertCircleIcon} />
+							<FormControlErrorText >
+								{phoneError?.msg}
+							</FormControlErrorText>
+						</FormControlError>
+					</FormControl>
 
-					</Input>
-					<FormControlError>
-						<FormControlErrorIcon as={AlertCircleIcon} />
-						<FormControlErrorText >
-							{passwordError?.msg}
-						</FormControlErrorText>
-					</FormControlError>
-				</FormControl>
-
-
-				<FormControl isInvalid={cofError !== undefined}>
-					<Input size="lg">
-						<InputField onChangeText={(confirmPassword: string) => setForm({ ...form, confirmPassword })}
-							type={showPassword ? "text" : "password"} value={form.confirmPassword} placeholder="Confirm Password" />
-
-					</Input>
-					<FormControlError>
-						<FormControlErrorIcon as={AlertCircleIcon} />
-						<FormControlErrorText >
-							{cofError?.msg}
-						</FormControlErrorText>
-					</FormControlError>
-				</FormControl>
+					<FormControl isInvalid={emailError !== undefined}>
+						<Input size="lg">
+							<InputField onChangeText={(email: string) => setForm({ ...form, email })}
+								type="text" placeholder="Email" value={form.email} />
+						</Input>
+						<FormControlError>
+							<FormControlErrorIcon as={AlertCircleIcon} />
+							<FormControlErrorText >
+								{emailError?.msg}
+							</FormControlErrorText>
+						</FormControlError>
+					</FormControl>
 
 
-				<Button onPress={handleRegister}>
-					<ButtonText>Register</ButtonText>
-				</Button>
+					<FormControl isInvalid={passwordError !== undefined}>
+						<Input size="lg">
+							<InputField onChangeText={(password: string) => setForm({ ...form, password })}
+								type={showPassword ? "text" : "password"} value={form.password} placeholder="Password" />
+							<InputSlot pr="$3" onPress={handleState}>
+								<InputIcon
+									as={showPassword ? EyeIcon : EyeOffIcon}
+									color="$darkBlue500"
+								/>
+							</InputSlot>
 
-				<HStack>
-					<Divider height={2} flex={1} marginTop="$3.5" />
-					<Text marginHorizontal="$3" >OR</Text>
-					<Divider height={2} flex={1} marginTop="$3.5" />
-				</HStack>
-				<HStack alignSelf="center">
-					<Text size="md" color="$black" bold={true} >Already have an account? </Text>
-					<Link href="/login">
-						<Text size="md" color="$primary600" bold={true} >Login</Text>
-					</Link>
+						</Input>
+						<FormControlError>
+							<FormControlErrorIcon as={AlertCircleIcon} />
+							<FormControlErrorText >
+								{passwordError?.msg}
+							</FormControlErrorText>
+						</FormControlError>
+					</FormControl>
 
-				</HStack>
 
-			</VStack>
+					<FormControl isInvalid={cofError !== undefined}>
+						<Input size="lg">
+							<InputField onChangeText={(confirmPassword: string) => setForm({ ...form, confirmPassword })}
+								type={showPassword ? "text" : "password"} value={form.confirmPassword} placeholder="Confirm Password" />
+
+						</Input>
+						<FormControlError>
+							<FormControlErrorIcon as={AlertCircleIcon} />
+							<FormControlErrorText >
+								{cofError?.msg}
+							</FormControlErrorText>
+						</FormControlError>
+					</FormControl>
+
+
+					<Button onPress={handleRegister}>
+						<ButtonText>Register</ButtonText>
+					</Button>
+
+					<HStack>
+						<Divider height={2} flex={1} marginTop="$3.5" />
+						<Text marginHorizontal="$3" >OR</Text>
+						<Divider height={2} flex={1} marginTop="$3.5" />
+					</HStack>
+					<HStack alignSelf="center">
+						<Text size="md" color="$black" bold={true} >Already have an account? </Text>
+						<Link href="/login">
+							<Text size="md" color="$primary600" bold={true} >Login</Text>
+						</Link>
+
+					</HStack>
+
+				</VStack>
+
+			</ScrollView>
 		</KeyboardAvoidingView>
 	</>
 }
