@@ -53,12 +53,12 @@ export default function PropertyItem({ data }: { data: Property }) {
 
 			<Heading mb="$1" size="md">{data.title}</Heading>
 			<Text mb="$2" size="sm">{data.description}</Text>
-			<View flex={1} flexDirection='row' justifyContent='space-between'  mb="$2">
+			<View flex={1} flexDirection='row' justifyContent='space-between' mb="$2">
 
 				<Button onPress={viewProperty} size="md" variant="outline" action="primary" alignSelf='flex-start' >
 					<ButtonText>See More</ButtonText>
 				</Button>
-				<VStack>
+				<VStack alignSelf='center'>
 
 					<Text alignSelf='flex-end' size="md" color='green' marginEnd={20}>{`${data.pricePerNight} $`} </Text>
 					<Text alignSelf='flex-end' size="xs" > per night</Text>

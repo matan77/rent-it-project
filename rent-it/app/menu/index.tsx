@@ -4,7 +4,14 @@ import { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import PropertiesLst from '@/components/properties_lst/PropertiesLst';
 
+import { useEffect } from 'react';//
+import { router } from 'expo-router'; //
+
 export default function Home() {
+	useEffect(() => {//
+		router.push('/menu/myBookings')//
+	}//
+		, [])//
 	const filters = ['', 'price_lh', 'price_hl'];
 	const [filter, setFilter] = useState(0);
 
