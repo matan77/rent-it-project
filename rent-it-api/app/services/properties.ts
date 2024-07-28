@@ -53,9 +53,6 @@ export default {
 	getProperties: async (isMy: boolean, userId: mongoose.Types.ObjectId, page: number = 1, limit: number = 10, filter: string = '') => {
 		try {
 			const skip = (page - 1) * limit;
-			console.log(skip);
-			console.log(limit);
-			console.log(filter === '');
 
 			let sort = {};
 			if (filter === 'price_hl') {
@@ -68,7 +65,7 @@ export default {
 
 			const query = isMy ? { owner: userId } : { owner: { $ne: userId } };
 
-
+		
 			const properties = await Property.find(query, { __v: 0 })
 				.sort(sort)
 				.skip(skip)

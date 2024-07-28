@@ -96,7 +96,7 @@ export default {
 					(isMy && typeof isMy === 'string' && isMy.trim().toLowerCase() === 'true') ? true : false,
 					owner,
 					parseInt(page as string),
-					2,
+					3,
 					filter as string
 				);
 				res.json(result);
