@@ -31,7 +31,7 @@ export default function Home() {
 
 			</Button>
 
-			{/* false */}
+			{/*isMy false */}
 			<PropertiesLst isMy={true} filter={filters[filter]} />
 		</SafeAreaView >
 	);

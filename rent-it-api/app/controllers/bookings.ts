@@ -29,7 +29,7 @@ export default {
 			const { property, checkIn, checkOut } = req.body;
 
 			try {
-				const newBooking = await bookingsService.createBooking({ user, property, checkIn, checkOut });
+				const newBooking = await bookingsService.createBooking({ user, property, checkIn: new Date(checkIn), checkOut: new Date(checkOut) });
 				res.status(201).json(newBooking);
 			} catch (error) {
 				if (error instanceof ResError) {

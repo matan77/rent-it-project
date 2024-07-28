@@ -28,6 +28,9 @@ export default {
 
 			return newProperty;
 		} catch (error) {
+			if (error instanceof ResError) {
+				throw error;
+			}
 			throw new ResError(500, 'An error occurred while creating the property');
 		}
 	},
@@ -46,6 +49,9 @@ export default {
 
 
 		} catch (error) {
+			if (error instanceof ResError) {
+				throw error;
+			}
 			throw new ResError(500, 'An error occurred while updating images for the property');
 		}
 	},
@@ -81,6 +87,9 @@ export default {
 				totalPages
 			};
 		} catch (error) {
+			if (error instanceof ResError) {
+				throw error;
+			}
 			throw new ResError(500, 'An error occurred while fetching properties');
 		}
 	},
@@ -96,6 +105,9 @@ export default {
 
 			return property;
 		} catch (error) {
+			if (error instanceof ResError) {
+				throw error;
+			}
 			throw new ResError(500, 'An error occurred while fetching the property');
 		}
 	},

@@ -1,7 +1,7 @@
 
-import { Icon, Button, Heading, Text, ArrowLeftIcon, VStack, HStack, ButtonIcon, ButtonText, ScrollView } from '@gluestack-ui/themed';
+import { Image, Icon, Button, Heading, Text, ArrowLeftIcon, VStack, HStack, ButtonIcon, ButtonText } from '@gluestack-ui/themed';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import api from '@/utils/api';
 import { Property } from '@/types/property';
@@ -10,8 +10,7 @@ import Services from '@/components/Services';
 import { MaterialIcons } from '@expo/vector-icons';
 import { UserContext } from '@/utils/userContext';
 import { Linking } from 'react-native';
-import { Image } from '@gluestack-ui/themed';
-import { Dimensions } from 'react-native';
+import { Dimensions, ScrollView } from 'react-native';
 import Booking from '@/components/Booking';
 
 
@@ -62,7 +61,9 @@ export default function PropertyScreen() {
 
 	}, []);
 	const imageHorizontalMr = 16;
-	console.log(property);
+
+	const scrollViewRef = useRef<ScrollView>(null);
+
 
 	return (
 		<SafeAreaView style={{ flex: 1 }}>
@@ -73,10 +74,13 @@ export default function PropertyScreen() {
 			<Heading color="$text900" $dark-color="$white" alignSelf="center" lineHeight="$md" marginTop="$5" marginBottom="$3" >
 				{property?.title}
 			</Heading>
-			<VStack>
+			<ScrollView ref={scrollViewRef} onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
+			>
 				<ScrollView
-					marginHorizontal={imageHorizontalMr}
-					alignSelf='center'
+					style={{
+						marginHorizontal: imageHorizontalMr,
+						alignSelf: 'center'
+					}}
 					decelerationRate={0}
 					snapToInterval={width - imageHorizontalMr * 2}
 
@@ -96,7 +100,7 @@ export default function PropertyScreen() {
 								key={index}
 								alt={`image ${index}`}
 								source={image}
-
+								resizeMethod='resize'
 								resizeMode='cover'
 							/>
 						))
@@ -113,10 +117,24 @@ export default function PropertyScreen() {
 					}
 				</ScrollView>
 
+				<HStack marginHorizontal={20} space='lg' justifyContent='space-between' marginTop={13} marginStart={8} >
+					<Heading textAlignVertical="center" color="$text900" $dark-color="$white" lineHeight="$md"  >
+						Description
+					</Heading>
 
-				<Heading marginTop={13} marginStart={8} color="$text900" $dark-color="$white" alignSelf="flex-start" lineHeight="$md"  >
-					Description
-				</Heading>
+					<HStack space='lg'>
+						<Button variant='link' onPress={handleCall} size='lg'>
+
+							<ButtonIcon as={() => <MaterialIcons color="#0077E6" name="phone" size={24} />} />
+						</Button>
+
+						<Button variant='link' onPress={handleEmail} size='lg'>
+							<ButtonIcon as={() => <MaterialIcons color="#0077E6" name="email" size={24} />} />
+						</Button>
+
+					</HStack>
+
+				</HStack>
 
 				<Text marginStart={8} alignSelf="flex-start"  >{property?.description}</Text>
 
@@ -134,21 +152,10 @@ export default function PropertyScreen() {
 					</VStack>
 				</HStack>
 
-				<HStack m="$1" marginHorizontal={20} space='lg' alignSelf='flex-start' >
-					<Button variant='link' onPress={handleCall} size='lg'>
+				{/*isMy false */}
+				{property && <Booking property={property._id} isDisabled={userContext?.user?._id !== property.owner._id}></Booking>}
 
-						<ButtonIcon as={() => <MaterialIcons color="#0077E6" name="phone" size={24} />} />
-					</Button>
-
-					<Button variant='link' onPress={handleEmail} size='lg'>
-						<ButtonIcon as={() => <MaterialIcons color="#0077E6" name="email" size={24} />} />
-					</Button>
-
-				</HStack>
-
-				<Booking isDisabled={userContext?.user?._id !== property?.owner._id}></Booking>
-
-			</VStack>
+			</ScrollView>
 		</SafeAreaView>
 	);
 }

@@ -1,7 +1,6 @@
 import React, { createContext, useState, Context, ReactNode, useEffect } from 'react';
 import { Platform } from 'react-native';
-import api from './api';
-import axios from 'axios'
+import api from '@/utils/api';
 import {
 	AlertDialog, AlertDialogBackdrop, AlertDialogContent, Spinner,
 	AlertDialogHeader, AlertDialogBody, Image

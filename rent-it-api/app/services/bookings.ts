@@ -45,6 +45,12 @@ export default {
 
 			return newBooking;
 		} catch (error) {
+			if (error instanceof ResError) {
+				throw error;
+			}
+			console.log(JSON.stringify(error));
+			console.log(error);
+
 			throw new ResError(500, 'An error occurred while creating the booking');
 		}
 	},
@@ -69,6 +75,9 @@ export default {
 				totalPages
 			};
 		} catch (error) {
+			if (error instanceof ResError) {
+				throw error;
+			}
 			throw new ResError(500, 'An error occurred while fetching bookings');
 		}
 	},
@@ -97,6 +106,9 @@ export default {
 				totalPages
 			};
 		} catch (error) {
+			if (error instanceof ResError) {
+				throw error;
+			}
 			throw new ResError(500, 'An error occurred while fetching bookings');
 		}
 	},
