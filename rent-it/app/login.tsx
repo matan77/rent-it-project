@@ -28,11 +28,8 @@ export default function Login() {
 	const [errors, setErrors] = useState({ errors: [] });
 
 	const [form, setForm] = useState({
-		// for dev del
-		email: "john.doe@example.com",
-		password: "Password123"
-		// email: "",
-		// password: ""
+		email: "",
+		password: ""
 	});
 	const toast = useToast()
 
@@ -68,13 +65,13 @@ export default function Login() {
 					setErrors(error.response?.data);
 				}
 				else {
-	
-					
+
+
 					toast.show({
 						placement: "bottom",
 						render: ({ id }) => {
 							const toastId = "toast-" + id
-						
+
 							return (
 								<Toast marginBottom="$16" nativeID={toastId} action="error" variant="accent">
 									<ToastTitle>
@@ -84,12 +81,12 @@ export default function Login() {
 							)
 						},
 					})
-									
+
 					setForm({
 						email: "",
 						password: ""
 					});
-					
+
 				}
 			}
 		}

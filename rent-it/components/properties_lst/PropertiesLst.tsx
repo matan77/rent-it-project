@@ -63,7 +63,7 @@ export default function PropertiesLst({ isMy, filter }: { isMy: boolean, filter:
 	const listEmptyComponent = () => {
 		return (
 			<View flex={1} padding={20} alignSelf='center' justifyContent='center'>
-				<Text>no properties uploaded</Text>
+				<Text>no properties</Text>
 			</View>
 		);
 	};

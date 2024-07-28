@@ -153,7 +153,7 @@ export default function PropertyScreen() {
 				</HStack>
 
 				{/*isMy false */}
-				{property && <Booking property={property._id} isDisabled={userContext?.user?._id !== property.owner._id}></Booking>}
+				{property && <Booking property={property._id} isDisabled={userContext?.user?._id === property.owner._id}></Booking>}
 
 			</ScrollView>
 		</SafeAreaView>
