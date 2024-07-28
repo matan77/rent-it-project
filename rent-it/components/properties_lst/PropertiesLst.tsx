@@ -84,7 +84,9 @@ export default function PropertiesLst({ isMy, filter }: { isMy: boolean, filter:
 			keyExtractor={(item, index) => index.toString()}
 			renderItem={({ item }) => <PropertyItem data={item as Property} />}
 			onEndReached={handleLoadMore}
-			onEndReachedThreshold={1}
+			onEndReachedThreshold={0.5}
+
+
 			refreshControl={
 				<RefreshControl
 					tintColor={color === "light" ? "black" : "white"}

@@ -1,10 +1,9 @@
 
 import {
-	Badge, BadgeIcon, View,
+	Badge, BadgeIcon,
 	ScrollView,
 	Text
 } from '@gluestack-ui/themed';
-import { useState } from 'react';
 
 import { icons } from 'lucide-react-native';
 
@@ -26,7 +25,6 @@ export default function Services({ services }: ServicesPickerProps) {
 		icons["WashingMachine"],
 		icons["ChefHat"],
 	]
-
 	return (
 
 		<ScrollView horizontal={true} alignSelf='center' margin={17}>
@@ -38,6 +36,7 @@ export default function Services({ services }: ServicesPickerProps) {
 					variant="outline"
 					borderRadius="$full"
 					action="info"
+					key={index}
 				>
 					<Text>{service}</Text>
 					<BadgeIcon as={servicesIcons[index]} ml="$2" />

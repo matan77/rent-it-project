@@ -12,6 +12,7 @@ import { UserContext } from '@/utils/userContext';
 import { Linking } from 'react-native';
 import { Image } from '@gluestack-ui/themed';
 import { Dimensions } from 'react-native';
+import Booking from '@/components/Booking';
 
 
 
@@ -60,7 +61,8 @@ export default function PropertyScreen() {
 		fetch();
 
 	}, []);
-
+	const imageHorizontalMr = 16;
+	console.log(property);
 
 	return (
 		<SafeAreaView style={{ flex: 1 }}>
@@ -73,10 +75,10 @@ export default function PropertyScreen() {
 			</Heading>
 			<VStack>
 				<ScrollView
-					marginHorizontal={2}
+					marginHorizontal={imageHorizontalMr}
 					alignSelf='center'
 					decelerationRate={0}
-					snapToInterval={width - 4}
+					snapToInterval={width - imageHorizontalMr * 2}
 
 
 					horizontal={true}
@@ -90,7 +92,7 @@ export default function PropertyScreen() {
 								borderRadius={7}
 
 								h={240}
-								w={width - 4}
+								w={width - imageHorizontalMr * 2}
 								key={index}
 								alt={`image ${index}`}
 								source={image}
@@ -101,7 +103,7 @@ export default function PropertyScreen() {
 						:
 						<Image
 							h={240}
-							w={330}
+							w={width - imageHorizontalMr * 2}
 							borderRadius={7}
 							alt="default image"
 							resizeMode='cover'
@@ -112,13 +114,18 @@ export default function PropertyScreen() {
 				</ScrollView>
 
 
+				<Heading marginTop={13} marginStart={8} color="$text900" $dark-color="$white" alignSelf="flex-start" lineHeight="$md"  >
+					Description
+				</Heading>
 
-				<Text marginTop={13} marginHorizontal={20} >	{property?.description} </Text>
+				<Text marginStart={8} alignSelf="flex-start"  >{property?.description}</Text>
+
 				<Services services={property ? property.services : []}></Services>
+
 				<HStack alignSelf='center'>
-					<Button marginEnd={14} variant='outline' onPress={openMap} size='lg' >
+					<Button marginEnd={14} variant='solid' onPress={openMap} size='lg' >
 						<ButtonText>{"View Location"}</ButtonText>
-						<ButtonIcon as={() => <MaterialIcons color="#0077E6" name="location-on" size={35} />} />
+						<ButtonIcon as={() => <MaterialIcons color="red" name="location-on" size={35} />} />
 					</Button>
 					<VStack >
 
@@ -126,29 +133,21 @@ export default function PropertyScreen() {
 						<Text alignSelf='flex-end' size="xs" > per night</Text>
 					</VStack>
 				</HStack>
-				<Heading m="$1" marginStart={4} color="$text900" $dark-color="$white" alignSelf="flex-start" lineHeight="$md" marginTop="$5" marginBottom="$3" >
-					Connect the Owner:
-				</Heading>
 
-				<VStack marginHorizontal={20} space='lg' alignSelf='flex-start' >
-					<Button variant='outline' onPress={handleCall} size='lg'>
-						<ButtonText marginEnd={4}>Call Owner</ButtonText>
+				<HStack m="$1" marginHorizontal={20} space='lg' alignSelf='flex-start' >
+					<Button variant='link' onPress={handleCall} size='lg'>
+
 						<ButtonIcon as={() => <MaterialIcons color="#0077E6" name="phone" size={24} />} />
 					</Button>
 
-					<Button variant='outline' onPress={handleEmail} size='lg'>
-						<ButtonText marginEnd={4}>Email Owner</ButtonText>
+					<Button variant='link' onPress={handleEmail} size='lg'>
 						<ButtonIcon as={() => <MaterialIcons color="#0077E6" name="email" size={24} />} />
 					</Button>
 
-				</VStack>
+				</HStack>
 
-				{userContext?.user?.id == property?.owner ?
-					<Button mt="$5" action="negative" >
+				<Booking isDisabled={userContext?.user?._id !== property?.owner._id}></Booking>
 
-						<ButtonText>Delete Account</ButtonText>
-					</Button>
-					: null}
 			</VStack>
 		</SafeAreaView>
 	);
