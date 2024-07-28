@@ -17,7 +17,7 @@ import axios from "axios";
 import { Text } from "@gluestack-ui/themed";
 import { Link, router } from 'expo-router';
 import { ErrorsResponse } from "@/types/error";
-import { Platform } from "react-native";
+import { Platform, KeyboardAvoidingView } from "react-native";
 
 export default function Register() {
 	const userContext = useContext(UserContext);
@@ -102,7 +102,7 @@ export default function Register() {
 
 
 	return <>
-		<ScrollView >
+		<KeyboardAvoidingView  behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
 
 
 			<VStack space="xl" paddingVertical="$10" $lg-width="15%" justifyContent="center" $lg-alignSelf="center" paddingHorizontal="$5">
@@ -206,6 +206,6 @@ export default function Register() {
 				</HStack>
 
 			</VStack>
-		</ScrollView>
+		</KeyboardAvoidingView>
 	</>
 }
