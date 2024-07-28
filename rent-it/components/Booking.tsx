@@ -161,11 +161,11 @@ export default function Booking({ isDisabled, property }: BookingProps) {
 
 				/>
 			}
-			
+
 			<Button
 				marginVertical="$5"
 				action="positive"
-				isDisabled={isBook && (isDisabled || !checkIn || !checkOut || isLoading)}
+				isDisabled={isDisabled || isBook && (!checkIn || !checkOut || isLoading)}
 				alignSelf="center"
 				onPress={handleBooking}
 			>

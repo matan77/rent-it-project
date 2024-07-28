@@ -46,6 +46,7 @@ export default function Login() {
 	const handleLogin = async () => {
 
 		setErrors({ errors: [] });
+		let msg = "";
 		try {
 			const res = await api.post('/api/users/login', form);
 			const { user, token } = res.data as { user: User, token: string };
@@ -66,22 +67,7 @@ export default function Login() {
 				}
 				else {
 
-
-					toast.show({
-						placement: "bottom",
-						render: ({ id }) => {
-							const toastId = "toast-" + id
-
-							return (
-								<Toast marginBottom="$16" nativeID={toastId} action="error" variant="accent">
-									<ToastTitle>
-										{error?.response?.data?.msg}
-									</ToastTitle>
-								</Toast>
-							)
-						},
-					})
-
+					msg = error?.response?.data?.msg
 					setForm({
 						email: "",
 						password: ""
@@ -90,6 +76,22 @@ export default function Login() {
 				}
 			}
 		}
+		if (msg)
+
+			toast.show({
+				placement: "bottom",
+				render: ({ id }) => {
+					const toastId = "toast-" + id
+
+					return (
+						<Toast marginBottom="$16" nativeID={toastId} action="error" variant="accent">
+							<ToastTitle>
+								{msg}
+							</ToastTitle>
+						</Toast>
+					)
+				},
+			})
 	}
 
 

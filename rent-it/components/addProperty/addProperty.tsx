@@ -163,7 +163,7 @@ export default function AddProperty() {
 				<View style={{ flex: 1 }} pointerEvents={isLocationOpen ? 'none' : 'auto'} >
 
 
-					<Button variant="link" p="$0" size="lg" position='absolute' left={10} top={10} onPress={router.back}  >
+					<Button variant="link" p="$0" size="lg" position='absolute' left={10} top={10} onPress={() => router.replace('menu/myProperties')}  >
 						<Icon size="xl" as={ArrowLeftIcon} />
 					</Button>
 

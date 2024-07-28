@@ -12,17 +12,8 @@ interface ImagePickerProps {
 
 export default function ImagePicker({ images, setImages }: ImagePickerProps) {
 
-	useEffect(() => {
-		(async () => {
-			const { status } = await ImagePkr.requestMediaLibraryPermissionsAsync();
-			if (status !== 'granted') {
-				alert('Sorry, we need camera roll permissions to make this work!');
-			}
-
-		})();
-	}, []);
-
 	const pickImages = async () => {
+
 		setImages([]);
 		try {
 

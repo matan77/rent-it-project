@@ -8,7 +8,7 @@ const bookingValidation = [
 	body('checkIn').notEmpty().withMessage('Check-in date is required').isISO8601().withMessage('Check-in date must be a valid date'),
 	body('checkOut').notEmpty().withMessage('Check-out date is required').isISO8601().withMessage('Check-out date must be a valid date')
 		.custom((value, { req }) => {
-			if (new Date(value) <= new Date(req.body.checkIn)) {
+			if (new Date(value) < new Date(req.body.checkIn)) {
 				throw new Error('Check-out date must be after check-in date');
 			}
 			return true;
